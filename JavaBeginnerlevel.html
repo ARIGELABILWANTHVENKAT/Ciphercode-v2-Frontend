@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Beginner – Complete Study</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --accent: #f89820;
+            --accent-secondary: #5382a1;
+            --border: #0f3460;
+            --success: #00ff88;
+            --code-bg: #0d1117;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #666666;
+            --accent: #e76f00;
+            --accent-secondary: #5382a1;
+            --border: #e0e0e0;
+            --success: #00cc6a;
+            --code-bg: #f0f0f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 20px; right: 20px;
+            width: 60px; height: 30px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle::after {
+            content: '🌙';
+            position: absolute;
+            width: 24px; height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 1px; left: 2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        [data-theme="light"] .theme-toggle::after { content: '☀️'; left: 30px; }
+        header {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: white; }
+        .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .dashboard {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .dashboard h2 { color: var(--accent); font-size: 1.3rem; }
+        .ring-container { position: relative; width: 80px; height: 80px; }
+        .ring-container svg { transform: rotate(-90deg); }
+        .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+        .ring-progress { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 226; stroke-dashoffset: 226; transition: stroke-dashoffset 0.5s ease; }
+        .ring-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .stat-item { text-align: center; padding: 15px; background: var(--bg-primary); border-radius: 10px; }
+        .stat-item .value { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
+        .stat-item .label { font-size: 0.9rem; color: var(--text-secondary); }
+        .unit-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+        }
+        .unit-header h2 { color: var(--accent); font-size: 1.8rem; }
+        .unit-badge { background: var(--accent); color: white; padding: 5px 20px; border-radius: 20px; font-size: 0.85rem; }
+        .topic {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+        }
+        .topic h3 { color: var(--accent-secondary); font-size: 1.3rem; margin-bottom: 15px; }
+        .topic p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 15px; }
+        .topic .sub-topic { color: var(--text-primary); font-weight: 600; margin-top: 15px; display: block; font-size: 1rem; }
+        .topic ul, .topic ol { padding-left: 25px; color: var(--text-secondary); line-height: 1.8; }
+        .topic li { margin-bottom: 5px; }
+        .code-block {
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent);
+            color: #79c0ff;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .practice-box {
+            background: rgba(248,152,32,0.1);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .practice-box h4 { color: var(--accent); margin-bottom: 10px; font-size: 1rem; }
+        .practice-box p, .practice-box li { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+        .practice-box ol { padding-left: 25px; }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .checkbox-container input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-container label { color: var(--text-secondary); cursor: pointer; user-select: none; }
+        .checkbox-container.completed label { text-decoration: line-through; color: var(--success); }
+        .reset-btn {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .reset-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,107,107,0.4); }
+        .toast {
+            position: fixed;
+            bottom: 80px; right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+        .toast.show { transform: translateX(0); }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .unit-header { flex-direction: column; gap: 10px; text-align: center; } }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()"></div>
+    <header>
+        <h1>☕ Java Beginner – Complete Study</h1>
+        <span class="badge">Units 1-4 • Foundation Level</span>
+    </header>
+    <div class="container">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h2>📊 Your Learning Progress</h2>
+                <div style="position: relative; width: 80px; height: 80px;">
+                    <svg width="80" height="80" style="transform: rotate(-90deg);">
+                        <circle fill="none" stroke="var(--border)" stroke-width="8" cx="40" cy="40" r="36"></circle>
+                        <circle fill="none" stroke="var(--accent)" stroke-width="8" cx="40" cy="40" r="36" stroke-linecap="round" stroke-dasharray="226" id="progressRing" style="stroke-dashoffset: 226; transition: stroke-dashoffset 0.5s ease;"></circle>
+                    </svg>
+                    <span class="ring-text" id="progressPercent">0%</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="value" id="completedCount">0</div><div class="label">Completed</div></div>
+                <div class="stat-item"><div class="value" id="totalTopics">20</div><div class="label">Total Topics</div></div>
+                <div class="stat-item"><div class="value" id="unitsCompleted">0/4</div><div class="label">Units</div></div>
+            </div>
+        </div>
+
+        <!-- UNIT 1 -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📘 Unit 1: Java Fundamentals</h2><span class="unit-badge">Weeks 1-4</span></div>
+
+            <div class="topic">
+                <h3>1.1 Introduction to Java & JVM</h3>
+                <p>Java is a high-level, class-based, object-oriented programming language designed to have as few implementation dependencies as possible. It follows the principle of <strong>"Write Once, Run Anywhere" (WORA)</strong>, meaning compiled Java code can run on all platforms that support Java without needing recompilation.</p>
+                <span class="sub-topic">🔹 Key Components of Java Platform:</span>
+                <ul>
+                    <li><strong>JDK (Java Development Kit):</strong> Includes JRE + development tools (compiler, debugger, etc.).</li>
+                    <li><strong>JRE (Java Runtime Environment):</strong> Provides libraries and JVM to run Java applications.</li>
+                    <li><strong>JVM (Java Virtual Machine):</strong> Executes bytecode. It provides memory management, garbage collection, and security.</li>
+                </ul>
+                <span class="sub-topic">🔹 How Java Code Executes:</span>
+                <ol>
+                    <li>Source code (.java) → Compiled by javac → Bytecode (.class).</li>
+                    <li>Bytecode is interpreted by JVM or compiled Just-In-Time (JIT) to native machine code.</li>
+                </ol>
+                <div class="code-block">
+// Hello World Program
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>What is the difference between JDK, JRE, and JVM?</li>
+                        <li>Explain the "Write Once, Run Anywhere" principle.</li>
+                        <li>Write a program that prints your name and age.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b1"><label for="b1">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>1.2 Data Types & Variables</h3>
+                <p>Java is a <strong>strongly typed</strong> language, meaning every variable must have a declared type. Data types define the size and type of values that can be stored.</p>
+                <span class="sub-topic">🔹 Primitive Data Types (8 types):</span>
+                <ul>
+                    <li><strong>byte:</strong> 8-bit signed, range -128 to 127.</li>
+                    <li><strong>short:</strong> 16-bit signed, range -32,768 to 32,767.</li>
+                    <li><strong>int:</strong> 32-bit signed, range -2³¹ to 2³¹-1 (most common).</li>
+                    <li><strong>long:</strong> 64-bit signed, use 'L' suffix (e.g., 100L).</li>
+                    <li><strong>float:</strong> 32-bit floating point, use 'f' suffix (e.g., 3.14f).</li>
+                    <li><strong>double:</strong> 64-bit floating point (default for decimals).</li>
+                    <li><strong>char:</strong> 16-bit Unicode character (single quotes).</li>
+                    <li><strong>boolean:</strong> true or false.</li>
+                </ul>
+                <span class="sub-topic">🔹 Type Conversion:</span>
+                <ul>
+                    <li><strong>Implicit (Widening):</strong> byte → short → int → long → float → double (automatic).</li>
+                    <li><strong>Explicit (Narrowing):</strong> double → float → long → int → ... (requires casting).</li>
+                </ul>
+                <div class="code-block">
+// Variable Declaration & Type Conversion
+int age = 25;
+double salary = 55000.75;
+char grade = 'A';
+boolean isActive = true;
+
+// Implicit conversion
+long bigNumber = age; // int to long
+
+// Explicit casting
+float pi = (float) 3.14159;
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Declare variables for your name (String), age (int), height (double), and student status (boolean).</li>
+                        <li>Convert a double value 99.99 to int and print the result.</li>
+                        <li>What happens when you assign a long value to an int variable without casting?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b2"><label for="b2">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>1.3 Operators & Expressions</h3>
+                <p>Operators perform operations on variables and values. Java supports various types of operators.</p>
+                <span class="sub-topic">🔹 Types of Operators:</span>
+                <ul>
+                    <li><strong>Arithmetic:</strong> +, -, *, /, %, ++, --</li>
+                    <li><strong>Relational:</strong> ==, !=, >, <, >=, <=</li>
+                    <li><strong>Logical:</strong> &&, ||, !</li>
+                    <li><strong>Bitwise:</strong> &, |, ^, ~, <<, >></li>
+                    <li><strong>Assignment:</strong> =, +=, -=, *=, /=</li>
+                </ul>
+                <span class="sub-topic">🔹 Operator Precedence:</span>
+                <p>Parentheses have the highest precedence, followed by multiplication/division, then addition/subtraction.</p>
+                <div class="code-block">
+// Operators Examples
+int a = 10, b = 3;
+System.out.println(a + b);  // 13
+System.out.println(a - b);  // 7
+System.out.println(a * b);  // 30
+System.out.println(a / b);  // 3 (integer division)
+System.out.println(a % b);  // 1 (remainder)
+
+// Relational and Logical
+System.out.println(a > b);    // true
+System.out.println(a < b);    // false
+System.out.println(a == b);   // false
+System.out.println(a > 5 && b < 5); // true
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to swap two numbers without using a third variable.</li>
+                        <li>Check if a number is even or odd using the modulo operator.</li>
+                        <li>What is the output of 10 % 3 and 10 / 3 in Java?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b3"><label for="b3">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>1.4 Control Statements (if, switch)</h3>
+                <p>Control statements allow you to make decisions in your code based on conditions.</p>
+                <span class="sub-topic">🔹 if-else Statement:</span>
+                <ul>
+                    <li><code>if (condition) { // code }</code></li>
+                    <li><code>if (condition) { ... } else { ... }</code></li>
+                    <li><code>if (condition1) { ... } else if (condition2) { ... } else { ... }</code></li>
+                </ul>
+                <span class="sub-topic">🔹 switch Statement:</span>
+                <p>Switch is used when you have multiple conditions based on a single variable.</p>
+                <div class="code-block">
+// if-else Example
+int marks = 85;
+if (marks >= 90) {
+    System.out.println("A+");
+} else if (marks >= 80) {
+    System.out.println("A");
+} else if (marks >= 70) {
+    System.out.println("B");
+} else {
+    System.out.println("Needs Improvement");
+}
+
+// Switch Example
+char grade = 'A';
+switch (grade) {
+    case 'A':
+        System.out.println("Excellent!");
+        break;
+    case 'B':
+        System.out.println("Good!");
+        break;
+    default:
+        System.out.println("Keep working!");
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to check if a number is positive, negative, or zero.</li>
+                        <li>Create a simple calculator using switch for +, -, *, /.</li>
+                        <li>Write a program to find the largest of three numbers.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b4"><label for="b4">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>1.5 Loops (for, while, do-while)</h3>
+                <p>Loops execute a block of code repeatedly based on a condition.</p>
+                <span class="sub-topic">🔹 for Loop:</span>
+                <p><code>for (initialization; condition; increment) { // code }</code></p>
+                <span class="sub-topic">🔹 while Loop:</span>
+                <p><code>while (condition) { // code }</code></p>
+                <span class="sub-topic">🔹 do-while Loop:</span>
+                <p><code>do { // code } while (condition);</code> — executes at least once.</p>
+                <div class="code-block">
+// for Loop
+for (int i = 1; i <= 5; i++) {
+    System.out.println("Count: " + i);
+}
+
+// while Loop
+int j = 1;
+while (j <= 5) {
+    System.out.println("While: " + j);
+    j++;
+}
+
+// do-while Loop
+int k = 1;
+do {
+    System.out.println("Do-while: " + k);
+    k++;
+} while (k <= 5);
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Print the sum of all numbers from 1 to 100.</li>
+                        <li>Print the multiplication table of a number entered by the user.</li>
+                        <li>Print a pattern (e.g., triangle of stars).</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b5"><label for="b5">Mark as completed</label></div>
+            </div>
+        </div>
+
+        <!-- UNIT 2 -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📗 Unit 2: Object-Oriented Programming</h2><span class="unit-badge">Weeks 5-9</span></div>
+
+            <div class="topic">
+                <h3>2.1 Classes & Objects</h3>
+                <p>Java is an object-oriented language. Everything revolves around classes (blueprints) and objects (instances).</p>
+                <span class="sub-topic">🔹 Class:</span>
+                <p>A class is a blueprint that defines the properties (fields) and behaviours (methods) of an object.</p>
+                <span class="sub-topic">🔹 Object:</span>
+                <p>An object is an instance of a class created using the <code>new</code> keyword.</p>
+                <div class="code-block">
+// Class Definition
+class Student {
+    // Fields
+    String name;
+    int age;
+    double gpa;
+
+    // Method
+    void displayInfo() {
+        System.out.println("Name: " + name);
+        System.out.println("Age: " + age);
+        System.out.println("GPA: " + gpa);
+    }
+}
+
+// Creating Objects
+public class Main {
+    public static void main(String[] args) {
+        Student s1 = new Student();
+        s1.name = "Alice";
+        s1.age = 20;
+        s1.gpa = 3.8;
+        s1.displayInfo();
+    }
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a class called 'Car' with fields brand, model, year, and a method to display details.</li>
+                        <li>Create two objects of the Car class and set different values.</li>
+                        <li>Add a constructor to the Car class.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b6"><label for="b6">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>2.2 Constructors</h3>
+                <p>Constructors are special methods that initialize an object when it is created. They have the same name as the class and no return type.</p>
+                <span class="sub-topic">🔹 Types of Constructors:</span>
+                <ul>
+                    <li><strong>Default Constructor:</strong> Provided by Java if no constructor is defined.</li>
+                    <li><strong>Parameterized Constructor:</strong> Accepts parameters to initialize fields.</li>
+                    <li><strong>Copy Constructor:</strong> Creates a new object by copying another object.</li>
+                </ul>
+                <div class="code-block">
+// Parameterized Constructor
+class Student {
+    String name;
+    int age;
+
+    // Constructor
+    Student(String n, int a) {
+        name = n;
+        age = a;
+    }
+
+    void display() {
+        System.out.println(name + ", " + age);
+    }
+}
+
+// Usage
+Student s1 = new Student("Bob", 22);
+s1.display();
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Add a parameterized constructor to the Car class.</li>
+                        <li>Write a program that uses a constructor to initialize a book's title and author.</li>
+                        <li>What is constructor overloading? Give an example.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b7"><label for="b7">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>2.3 Inheritance</h3>
+                <p>Inheritance allows a class to inherit properties and methods from another class. It promotes code reusability.</p>
+                <span class="sub-topic">🔹 Key Terms:</span>
+                <ul>
+                    <li><strong>Superclass (Parent):</strong> The class being inherited from.</li>
+                    <li><strong>Subclass (Child):</strong> The class that inherits.</li>
+                    <li><strong>extends:</strong> Keyword used for inheritance.</li>
+                    <li><strong>super:</strong> References the parent class.</li>
+                </ul>
+                <div class="code-block">
+// Inheritance Example
+class Animal {
+    void eat() {
+        System.out.println("Animal eats");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Dog barks");
+    }
+}
+
+// Usage
+Dog d = new Dog();
+d.eat(); // Inherited method
+d.bark(); // Own method
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a superclass 'Vehicle' and subclasses 'Car' and 'Bike' with appropriate methods.</li>
+                        <li>Explain the use of the 'super' keyword with an example.</li>
+                        <li>What is method overriding?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b8"><label for="b8">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>2.4 Polymorphism</h3>
+                <p>Polymorphism means "many forms". It allows one interface to be used for a general class of actions.</p>
+                <span class="sub-topic">🔹 Compile-time Polymorphism (Method Overloading):</span>
+                <p>Multiple methods with the same name but different parameters.</p>
+                <span class="sub-topic">🔹 Runtime Polymorphism (Method Overriding):</span>
+                <p>A subclass provides a specific implementation of a method already defined in its superclass.</p>
+                <div class="code-block">
+// Method Overloading
+class MathUtils {
+    int add(int a, int b) { return a + b; }
+    int add(int a, int b, int c) { return a + b + c; }
+    double add(double a, double b) { return a + b; }
+}
+
+// Method Overriding
+class Animal {
+    void sound() { System.out.println("Animal sound"); }
+}
+class Cat extends Animal {
+    void sound() { System.out.println("Meow"); }
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a class with three overloaded methods called 'area' for different shapes.</li>
+                        <li>Override the toString() method in a class.</li>
+                        <li>What is the difference between overloading and overriding?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b9"><label for="b9">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>2.5 Abstraction & Interfaces</h3>
+                <p>Abstraction hides implementation details and shows only essential features. Java provides abstract classes and interfaces.</p>
+                <span class="sub-topic">🔹 Abstract Class:</span>
+                <p>A class that cannot be instantiated and may contain abstract methods (methods without a body).</p>
+                <span class="sub-topic">🔹 Interface:</span>
+                <p>A completely abstract type that defines a contract for classes to implement.</p>
+                <div class="code-block">
+// Abstract Class
+abstract class Shape {
+    abstract void draw();
+}
+
+// Interface
+interface Drawable {
+    void draw();
+}
+
+// Implementation
+class Circle extends Shape implements Drawable {
+    void draw() {
+        System.out.println("Drawing Circle");
+    }
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create an abstract class 'Vehicle' with an abstract method 'start()'.</li>
+                        <li>Create an interface 'Playable' with a method 'play()' and implement it.</li>
+                        <li>When would you use an abstract class vs an interface?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b10"><label for="b10">Mark as completed</label></div>
+            </div>
+        </div>
+
+        <!-- UNIT 3: Arrays & Strings -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📙 Unit 3: Arrays & Strings</h2><span class="unit-badge">Weeks 10-13</span></div>
+
+            <div class="topic">
+                <h3>3.1 One-Dimensional Arrays</h3>
+                <p>An array is a container object that holds a fixed number of values of a single type.</p>
+                <span class="sub-topic">🔹 Declaration & Initialization:</span>
+                <ul>
+                    <li><code>int[] numbers = new int[5];</code></li>
+                    <li><code>int[] numbers = {1, 2, 3, 4, 5};</code></li>
+                </ul>
+                <span class="sub-topic">🔹 Common Operations:</span>
+                <ul>
+                    <li><code>numbers.length</code> → get array length.</li>
+                    <li><code>numbers[0]</code> → access first element.</li>
+                    <li>Loop through with for or enhanced for loop.</li>
+                </ul>
+                <div class="code-block">
+// Array Example
+int[] marks = {85, 90, 78, 92, 88};
+int sum = 0;
+
+for (int i = 0; i < marks.length; i++) {
+    sum += marks[i];
+}
+
+double average = (double) sum / marks.length;
+System.out.println("Average: " + average);
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to find the largest element in an array.</li>
+                        <li>Write a program to reverse an array.</li>
+                        <li>Calculate the sum of all even numbers in an array.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b11"><label for="b11">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>3.2 Multi-Dimensional Arrays</h3>
+                <p>Java supports multi-dimensional arrays (arrays of arrays), commonly used for matrices.</p>
+                <div class="code-block">
+// 2D Array Example
+int[][] matrix = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+// Print matrix
+for (int i = 0; i < matrix.length; i++) {
+    for (int j = 0; j < matrix[i].length; j++) {
+        System.out.print(matrix[i][j] + " ");
+    }
+    System.out.println();
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a 3x3 matrix and find the sum of its diagonal elements.</li>
+                        <li>Write a program to multiply two matrices.</li>
+                        <li>Find the transpose of a matrix.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b12"><label for="b12">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>3.3 String Class Methods</h3>
+                <p>Strings in Java are immutable objects. The String class provides many useful methods.</p>
+                <span class="sub-topic">🔹 Common Methods:</span>
+                <ul>
+                    <li><code>length()</code> → returns the number of characters.</li>
+                    <li><code>charAt(index)</code> → returns the character at a specific index.</li>
+                    <li><code>substring(start, end)</code> → extracts a part of the string.</li>
+                    <li><code>toUpperCase()</code>, <code>toLowerCase()</code> → convert case.</li>
+                    <li><code>trim()</code> → removes leading/trailing spaces.</li>
+                    <li><code>replace(old, new)</code> → replaces characters.</li>
+                    <li><code>split(regex)</code> → splits the string into an array.</li>
+                    <li><code>equals()</code>, <code>equalsIgnoreCase()</code> → compare strings.</li>
+                </ul>
+                <div class="code-block">
+// String Methods Example
+String str = " Hello, World! ";
+
+System.out.println(str.length());                    // 15
+System.out.println(str.trim());                      // "Hello, World!"
+System.out.println(str.toUpperCase());               // " HELLO, WORLD! "
+System.out.println(str.substring(0, 5));             // " Hell"
+System.out.println(str.contains("World"));           // true
+
+String[] parts = str.trim().split(",");
+System.out.println(parts[0]);                        // "Hello"
+System.out.println(parts[1]);                        // " World!"
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Check if a string is a palindrome (reads the same forwards and backwards).</li>
+                        <li>Count the number of vowels in a string.</li>
+                        <li>Reverse a string without using StringBuilder.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b13"><label for="b13">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>3.4 StringBuffer & StringBuilder</h3>
+                <p>Unlike String, StringBuffer and StringBuilder are mutable and more efficient when performing many modifications.</p>
+                <span class="sub-topic">🔹 Differences:</span>
+                <ul>
+                    <li><strong>StringBuffer:</strong> Thread-safe (synchronized), slower.</li>
+                    <li><strong>StringBuilder:</strong> Not thread-safe, faster.</li>
+                </ul>
+                <span class="sub-topic">🔹 Common Methods:</span>
+                <ul>
+                    <li><code>append()</code> → adds text to the end.</li>
+                    <li><code>insert()</code> → inserts text at a position.</li>
+                    <li><code>delete()</code> → removes characters.</li>
+                    <li><code>reverse()</code> → reverses the sequence.</li>
+                </ul>
+                <div class="code-block">
+// StringBuilder Example
+StringBuilder sb = new StringBuilder("Hello");
+sb.append(" World");
+sb.insert(5, " Java");
+sb.delete(5, 10);
+System.out.println(sb.toString()); // "HelloWorld"
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Using StringBuilder, reverse a string efficiently.</li>
+                        <li>Create a program that builds a sentence by appending words.</li>
+                        <li>Explain when to use StringBuffer vs StringBuilder.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b14"><label for="b14">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>3.5 Wrapper Classes</h3>
+                <p>Wrapper classes convert primitive types into objects. They are used in collections and for utility methods.</p>
+                <span class="sub-topic">🔹 Primitive ↔ Wrapper:</span>
+                <ul>
+                    <li><code>byte → Byte</code></li>
+                    <li><code>short → Short</code></li>
+                    <li><code>int → Integer</code></li>
+                    <li><code>long → Long</code></li>
+                    <li><code>float → Float</code></li>
+                    <li><code>double → Double</code></li>
+                    <li><code>char → Character</code></li>
+                    <li><code>boolean → Boolean</code></li>
+                </ul>
+                <span class="sub-topic">🔹 Autoboxing & Unboxing:</span>
+                <p>Autoboxing is the automatic conversion of primitive to wrapper, and unboxing is the reverse.</p>
+                <div class="code-block">
+// Wrapper Class Example
+Integer num = 10; // Autoboxing
+int value = num;  // Unboxing
+
+// Parsing
+int parsed = Integer.parseInt("123");
+double d = Double.parseDouble("3.14");
+
+// Utility methods
+System.out.println(Integer.MAX_VALUE);
+System.out.println(Integer.toBinaryString(10));
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Convert a string "100" to an integer using Integer.parseInt().</li>
+                        <li>Check if a character is a letter using Character.isLetter().</li>
+                        <li>What is autoboxing and unboxing? Give examples.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b15"><label for="b15">Mark as completed</label></div>
+            </div>
+        </div>
+
+        <!-- UNIT 4: Exception Handling & I/O -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📕 Unit 4: Exception Handling & I/O</h2><span class="unit-badge">Weeks 14-17</span></div>
+
+            <div class="topic">
+                <h3>4.1 Exception Handling (try-catch)</h3>
+                <p>Exception handling is used to manage runtime errors and maintain normal program flow.</p>
+                <span class="sub-topic">🔹 Key Concepts:</span>
+                <ul>
+                    <li><strong>try:</strong> Block where exceptions may occur.</li>
+                    <li><strong>catch:</strong> Block that handles specific exceptions.</li>
+                    <li><strong>finally:</strong> Block that executes regardless of exception (used for cleanup).</li>
+                    <li><strong>throws:</strong> Declares that a method might throw an exception.</li>
+                </ul>
+                <div class="code-block">
+// Exception Handling Example
+try {
+    int result = 10 / 0; // ArithmeticException
+    System.out.println(result);
+} catch (ArithmeticException e) {
+    System.out.println("Cannot divide by zero!");
+} finally {
+    System.out.println("This always runs");
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program that handles ArrayIndexOutOfBoundsException.</li>
+                        <li>Create a program that reads a number from the user and handles NumberFormatException.</li>
+                        <li>What is the difference between checked and unchecked exceptions?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b16"><label for="b16">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>4.2 Custom Exceptions</h3>
+                <p>You can create your own exception classes by extending Exception (checked) or RuntimeException (unchecked).</p>
+                <div class="code-block">
+// Custom Exception
+class InvalidAgeException extends Exception {
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+
+// Usage
+class Voter {
+    void checkAge(int age) throws InvalidAgeException {
+        if (age < 18) {
+            throw new InvalidAgeException("Age must be 18 or above");
+        }
+        System.out.println("Eligible to vote");
+    }
+}
+
+// In main
+Voter v = new Voter();
+try {
+    v.checkAge(16);
+} catch (InvalidAgeException e) {
+    System.out.println(e.getMessage());
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a custom exception for insufficient balance in a bank account.</li>
+                        <li>Throw and catch the custom exception in a main method.</li>
+                        <li>When would you use a custom exception?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b17"><label for="b17">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>4.3 File I/O (FileReader, FileWriter)</h3>
+                <p>Java provides classes for reading and writing files using character streams.</p>
+                <span class="sub-topic">🔹 FileWriter:</span>
+                <p>Used to write characters to a file.</p>
+                <span class="sub-topic">🔹 FileReader:</span>
+                <p>Used to read characters from a file.</p>
+                <div class="code-block">
+// Writing to a file
+try (FileWriter writer = new FileWriter("output.txt")) {
+    writer.write("Hello, File!");
+} catch (IOException e) {
+    e.printStackTrace();
+}
+
+// Reading from a file
+try (FileReader reader = new FileReader("output.txt")) {
+    int data;
+    while ((data = reader.read()) != -1) {
+        System.out.print((char) data);
+    }
+} catch (IOException e) {
+    e.printStackTrace();
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to copy the contents of one file to another.</li>
+                        <li>Count the number of lines in a text file.</li>
+                        <li>Write a program to append text to an existing file.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b18"><label for="b18">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>4.4 Serialization</h3>
+                <p>Serialization converts an object into a byte stream, allowing it to be saved to a file or transferred over a network.</p>
+                <span class="sub-topic">🔹 Key Steps:</span>
+                <ul>
+                    <li>Make the class implement <code>Serializable</code>.</li>
+                    <li>Use <code>ObjectOutputStream</code> to write objects.</li>
+                    <li>Use <code>ObjectInputStream</code> to read objects.</li>
+                    <li><code>transient</code> keyword prevents a field from being serialized.</li>
+                </ul>
+                <div class="code-block">
+// Serializable Class
+import java.io.*;
+
+class Person implements Serializable {
+    String name;
+    int age;
+    transient String password; // Won't be serialized
+
+    Person(String name, int age, String password) {
+        this.name = name;
+        this.age = age;
+        this.password = password;
+    }
+}
+
+// Write object
+Person p = new Person("Alice", 25, "secret");
+try (ObjectOutputStream out = new ObjectOutputStream(
+    new FileOutputStream("person.ser"))) {
+    out.writeObject(p);
+}
+
+// Read object
+try (ObjectInputStream in = new ObjectInputStream(
+    new FileInputStream("person.ser"))) {
+    Person read = (Person) in.readObject();
+    System.out.println(read.name + ", " + read.age);
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a Student class with name, id, and grade fields. Serialize and deserialize it.</li>
+                        <li>What is the purpose of the 'transient' keyword?</li>
+                        <li>When would you use serialization in a real-world application?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b19"><label for="b19">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>4.5 Buffered Streams</h3>
+                <p>Buffered streams improve performance by reducing the number of I/O operations.</p>
+                <span class="sub-topic">🔹 Buffered I/O Classes:</span>
+                <ul>
+                    <li><code>BufferedReader</code> → reads text from an input stream efficiently.</li>
+                    <li><code>BufferedWriter</code> → writes text to an output stream efficiently.</li>
+                </ul>
+                <div class="code-block">
+// Using BufferedReader
+try (BufferedReader br = new BufferedReader(
+    new FileReader("input.txt"))) {
+    String line;
+    while ((line = br.readLine()) != null) {
+        System.out.println(line);
+    }
+}
+
+// Using BufferedWriter
+try (BufferedWriter bw = new BufferedWriter(
+    new FileWriter("output.txt"))) {
+    bw.write("Hello, Buffered!");
+    bw.newLine();
+    bw.write("Second line");
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Read a file line by line using BufferedReader and count the words.</li>
+                        <li>Write a program that uses BufferedWriter to store user input.</li>
+                        <li>Why are buffered streams more efficient than unbuffered streams?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="b20"><label for="b20">Mark as completed</label></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetProgress()">🔄 Reset Progress</button>
+    <div class="toast" id="toast">Progress saved!</div>
+
+    <script>
+        const STORAGE_KEY = 'java_beginner_progress';
+        let completedItems = new Set();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            setupEventListeners();
+            updateUI();
+        });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            localStorage.setItem('theme', html.getAttribute('data-theme'));
+        }
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) completedItems = new Set(JSON.parse(saved));
+        }
+        function saveProgress() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([...completedItems]));
+            showToast('Progress saved!');
+        }
+        function setupEventListeners() {
+            document.querySelectorAll('.checkbox-container').forEach(c => {
+                c.addEventListener('click', (e) => {
+                    const cb = c.querySelector('input[type="checkbox"]');
+                    if (e.target.tagName !== 'INPUT') cb.checked = !cb.checked;
+                    if (cb.checked) { completedItems.add(cb.id); c.classList.add('completed'); }
+                    else { completedItems.delete(cb.id); c.classList.remove('completed'); }
+                    saveProgress(); updateUI();
+                });
+            });
+        }
+        function updateUI() {
+            const totalItems = document.querySelectorAll('.checkbox-container input[type="checkbox"]').length;
+            const completedCount = completedItems.size;
+            const percentage = Math.round((completedCount / totalItems) * 100);
+            document.getElementById('progressPercent').textContent = percentage + '%';
+            document.getElementById('completedCount').textContent = completedCount;
+            const ring = document.getElementById('progressRing');
+            const circumference = 2 * Math.PI * 36;
+            ring.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+            let unitsCompleted = 0;
+            const unitRanges = [
+                ['b1','b2','b3','b4','b5'],
+                ['b6','b7','b8','b9','b10'],
+                ['b11','b12','b13','b14','b15'],
+                ['b16','b17','b18','b19','b20']
+            ];
+            unitRanges.forEach(range => {
+                if (range.every(id => completedItems.has(id))) unitsCompleted++;
+            });
+            document.getElementById('unitsCompleted').textContent = unitsCompleted + '/4';
+            document.querySelectorAll('.checkbox-container').forEach(c => {
+                const cb = c.querySelector('input[type="checkbox"]');
+                if (completedItems.has(cb.id)) c.classList.add('completed');
+                else c.classList.remove('completed');
+            });
+        }
+        function resetProgress() {
+            if (confirm('Reset all progress?')) {
+                completedItems.clear();
+                localStorage.removeItem(STORAGE_KEY);
+                updateUI();
+                showToast('Progress reset!');
+            }
+        }
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Programming Roadmap</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: rgba(255,255,255,0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent: #f89820;
+            --accent-secondary: #5382a1;
+            --border: rgba(255,255,255,0.1);
+            --success: #00ff88;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(0,0,0,0.03);
+            --text-primary: #1a1a2e;
+            --text-secondary: #555555;
+            --accent: #e76f00;
+            --accent-secondary: #5382a1;
+            --border: rgba(0,0,0,0.1);
+            --success: #00cc6a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle { text-align: center; color: var(--text-secondary); margin-bottom: 20px; }
+        .java-logo { text-align: center; font-size: 4rem; margin-bottom: 10px; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 30px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .theme-toggle::after {
+            content: '🌙';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        [data-theme="light"] .theme-toggle::after {
+            content: '☀️';
+            left: 30px;
+        }
+
+        /* Progress Stats */
+        .progress-stats {
+            max-width: 900px;
+            margin: 0 auto 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-header h3 { color: var(--accent); }
+        .progress-percentage { font-size: 2rem; font-weight: bold; color: var(--accent); }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 20px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.5rem; font-weight: bold; color: var(--accent); }
+        .stat-label { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* Roadmap */
+        .roadmap-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .roadmap-line {
+            position: absolute;
+            left: 50%;
+            top: 0; bottom: 0;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--accent), var(--accent-secondary), #50a14f);
+            transform: translateX(-50%);
+        }
+
+        .phase {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .phase:nth-child(odd) { flex-direction: row; }
+        .phase:nth-child(even) { flex-direction: row-reverse; }
+
+        .phase-content {
+            width: 42%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .phase-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(248,152,32,0.2);
+        }
+
+        .phase-content.completed {
+            border-color: var(--success);
+            box-shadow: 0 0 20px rgba(0,255,136,0.2);
+        }
+
+        .phase-number {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(248,152,32,0.5);
+        }
+
+        .phase-content h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.2rem; }
+        .phase-content ul { list-style: none; }
+
+        .phase-content li {
+            padding: 10px 0;
+            padding-left: 35px;
+            position: relative;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .phase-content li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent);
+            border-radius: 4px;
+        }
+
+        .phase-content li.checked { color: var(--text-primary); }
+
+        .phase-content li.checked::before {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .phase-content li.checked::after {
+            content: '✓';
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .duration {
+            display: inline-block;
+            background: rgba(248,152,32,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-top: 15px;
+        }
+
+        .reset-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.4);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show { transform: translateX(0); }
+
+        @media (max-width: 768px) {
+            .roadmap-line { left: 30px; }
+            .phase, .phase:nth-child(even) { flex-direction: row; }
+            .phase-number { left: 30px; }
+            .phase-content { width: calc(100% - 70px); margin-left: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()"></div>
+    
+    <div class="java-logo">☕</div>
+    <h1>Java Programming Roadmap</h1>
+    <p class="subtitle">Complete path from basics to advanced Java development</p>
+    
+    <div class="progress-stats">
+        <div class="progress-header">
+            <h3>📊 Your Progress</h3>
+            <span class="progress-percentage" id="progressPercent">0%</span>
+        </div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="completedCount">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="remainingCount">35</div>
+                <div class="stat-label">Remaining</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="totalItems">35</div>
+                <div class="stat-label">Total Topics</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="roadmap-container">
+        <div class="roadmap-line"></div>
+        
+        <!-- Unit 1 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="1">
+                <h3>📘 Unit 1: Java Fundamentals</h3>
+                <ul>
+                    <li data-id="1">Introduction to Java & JVM</li>
+                    <li data-id="2">Data Types & Variables</li>
+                    <li data-id="3">Operators & Expressions</li>
+                    <li data-id="4">Control Statements (if, switch)</li>
+                    <li data-id="5">Loops (for, while, do-while)</li>
+                </ul>
+                <span class="duration">⏱ 3-4 weeks</span>
+            </div>
+            <div class="phase-number">1</div>
+        </div>
+        
+        <!-- Unit 2 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="2">
+                <h3>📗 Unit 2: Object-Oriented Programming</h3>
+                <ul>
+                    <li data-id="6">Classes & Objects</li>
+                    <li data-id="7">Constructors</li>
+                    <li data-id="8">Inheritance</li>
+                    <li data-id="9">Polymorphism</li>
+                    <li data-id="10">Abstraction & Interfaces</li>
+                </ul>
+                <span class="duration">⏱ 4-5 weeks</span>
+            </div>
+            <div class="phase-number">2</div>
+        </div>
+        
+        <!-- Unit 3 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="3">
+                <h3>📙 Unit 3: Arrays & Strings</h3>
+                <ul>
+                    <li data-id="11">One-Dimensional Arrays</li>
+                    <li data-id="12">Multi-Dimensional Arrays</li>
+                    <li data-id="13">String Class Methods</li>
+                    <li data-id="14">StringBuffer & StringBuilder</li>
+                    <li data-id="15">Wrapper Classes</li>
+                </ul>
+                <span class="duration">⏱ 3-4 weeks</span>
+            </div>
+            <div class="phase-number">3</div>
+        </div>
+        
+        <!-- Unit 4 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="4">
+                <h3>📕 Unit 4: Exception Handling & I/O</h3>
+                <ul>
+                    <li data-id="16">Exception Handling (try-catch)</li>
+                    <li data-id="17">Custom Exceptions</li>
+                    <li data-id="18">File I/O (FileReader, FileWriter)</li>
+                    <li data-id="19">Serialization</li>
+                    <li data-id="20">Buffered Streams</li>
+                </ul>
+                <span class="duration">⏱ 3-4 weeks</span>
+            </div>
+            <div class="phase-number">4</div>
+        </div>
+        
+        <!-- Unit 5 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="5">
+                <h3>📓 Unit 5: Collections Framework</h3>
+                <ul>
+                    <li data-id="21">List Interface (ArrayList, LinkedList)</li>
+                    <li data-id="22">Set Interface (HashSet, TreeSet)</li>
+                    <li data-id="23">Map Interface (HashMap, TreeMap)</li>
+                    <li data-id="24">Iterators & Generics</li>
+                    <li data-id="25">Comparable & Comparator</li>
+                </ul>
+                <span class="duration">⏱ 4-5 weeks</span>
+            </div>
+            <div class="phase-number">5</div>
+        </div>
+        
+        <!-- Unit 6 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="6">
+                <h3>📒 Unit 6: Multithreading & Concurrency</h3>
+                <ul>
+                    <li data-id="26">Thread Class & Runnable</li>
+                    <li data-id="27">Synchronization</li>
+                    <li data-id="28">Thread Lifecycle</li>
+                    <li data-id="29">Thread Pools</li>
+                    <li data-id="30">Concurrent Collections</li>
+                </ul>
+                <span class="duration">⏱ 4-5 weeks</span>
+            </div>
+            <div class="phase-number">6</div>
+        </div>
+        
+        <!-- Unit 7 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="7">
+                <h3>📒 Unit 7: JDBC & Database</h3>
+                <ul>
+                    <li data-id="31">JDBC Architecture</li>
+                    <li data-id="32">Connection, Statement, ResultSet</li>
+                    <li data-id="33">PreparedStatement</li>
+                    <li data-id="34">CallableStatement</li>
+                    <li data-id="35">Transaction Management</li>
+                </ul>
+                <span class="duration">⏱ 3-4 weeks</span>
+            </div>
+            <div class="phase-number">7</div>
+        </div>
+        
+        <!-- Unit 8 -->
+        <div class="phase">
+            <div class="phase-content" data-phase="8">
+                <h3>📘 Unit 8: Advanced Java</h3>
+                <ul>
+                    <li data-id="36">Lambda Expressions</li>
+                    <li data-id="37">Stream API</li>
+                    <li data-id="38">Functional Interfaces</li>
+                    <li data-id="39">Java 8+ Features</li>
+                    <li data-id="40">Design Patterns</li>
+                </ul>
+                <span class="duration">⏱ 5-6 weeks</span>
+            </div>
+            <div class="phase-number">8</div>
+        </div>
+    </div>
+    
+    <button class="reset-btn" onclick="resetProgress()">🔄 Reset</button>
+    <div class="toast" id="toast">Progress saved!</div>
+
+    <script>
+        const STORAGE_KEY = 'java_roadmap_progress';
+        let completedItems = new Set();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            setupEventListeners();
+            updateUI();
+        });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+            localStorage.setItem('theme', currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) completedItems = new Set(JSON.parse(saved));
+        }
+
+        function saveProgress() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([...completedItems]));
+            showToast('Progress saved!');
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.phase-content li').forEach(item => {
+                item.addEventListener('click', () => toggleItem(item));
+            });
+        }
+
+        function toggleItem(item) {
+            const id = item.dataset.id;
+            if (completedItems.has(id)) {
+                completedItems.delete(id);
+                item.classList.remove('checked');
+            } else {
+                completedItems.add(id);
+                item.classList.add('checked');
+                createConfetti(item);
+            }
+            saveProgress();
+            updateUI();
+        }
+
+        function updateUI() {
+            const totalItems = document.querySelectorAll('.phase-content li').length;
+            const completedCount = completedItems.size;
+            const percentage = Math.round((completedCount / totalItems) * 100);
+            
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressPercent').textContent = percentage + '%';
+            document.getElementById('completedCount').textContent = completedCount;
+            document.getElementById('remainingCount').textContent = totalItems - completedCount;
+            
+            document.querySelectorAll('.phase-content li').forEach(item => {
+                item.classList.toggle('checked', completedItems.has(item.dataset.id));
+            });
+
+            document.querySelectorAll('.phase-content').forEach(phase => {
+                const items = phase.querySelectorAll('li');
+                const allChecked = [...items].every(item => completedItems.has(item.dataset.id));
+                phase.classList.toggle('completed', allChecked);
+            });
+        }
+
+        function resetProgress() {
+            if (confirm('Reset all progress?')) {
+                completedItems.clear();
+                localStorage.removeItem(STORAGE_KEY);
+                updateUI();
+                showToast('Progress reset!');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        function createConfetti(element) {
+            const colors = ['#f89820', '#5382a1', '#00ff88', '#ff6b6b', '#ffd93d'];
+            const rect = element.getBoundingClientRect();
+            
+            for (let i = 0; i < 10; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.cssText = `
+                    position: fixed;
+                    width: 8px;
+                    height: 8px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    border-radius: 50%;
+                    pointer-events: none;
+                    z-index: 9999;
+                    left: ${rect.left + rect.width / 2}px;
+                    top: ${rect.top + rect.height / 2}px;
+                `;
+                document.body.appendChild(confetti);
+                
+                const angle = (Math.random() - 0.5) * 360;
+                const velocity = 5 + Math.random() * 5;
+                const vx = Math.cos(angle * Math.PI / 180) * velocity;
+                const vy = Math.sin(angle * Math.PI / 180) * velocity;
+                
+                let x = 0, y = 0, opacity = 1;
+                const animate = () => {
+                    x += vx;
+                    y += vy + 2;
+                    opacity -= 0.02;
+                    if (opacity > 0) {
+                        confetti.style.transform = `translate(${x}px, ${y}px)`;
+                        confetti.style.opacity = opacity;
+                        requestAnimationFrame(animate);
+                    } else {
+                        confetti.remove();
+                    }
+                };
+                requestAnimationFrame(animate);
+            }
+        }
+    </script>
+</body>
+</html>

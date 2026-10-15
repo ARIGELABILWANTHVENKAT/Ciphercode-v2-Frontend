@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Deep Learning - Complete Guide</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-card: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --accent: #7c3aed;
+            --accent-secondary: #a78bfa;
+            --code-bg: #0d1117;
+            --border: #30363d;
+            --success: #3fb950;
+            --warning: #f0883e;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f6f8fa;
+            --bg-card: #ffffff;
+            --text-primary: #24292f;
+            --text-secondary: #57606a;
+            --accent: #7c3aed;
+            --accent-secondary: #a78bfa;
+            --code-bg: #f6f8fa;
+            --border: #d0d7de;
+            --success: #1a7f37;
+            --warning: #bc4c00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-card));
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary), #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 30px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle::after {
+            content: '🌙';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 1px;
+            left: 2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        [data-theme="light"] .theme-toggle::after {
+            content: '☀️';
+            left: 30px;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text { color: var(--text-secondary); font-size: 0.9rem; }
+
+        /* Unit Cards */
+        .unit {
+            background: var(--bg-card);
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .unit-header {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .unit-header h2 {
+            color: white;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .unit-header .toggle-icon {
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .unit-content {
+            padding: 25px;
+            display: none;
+        }
+
+        .unit-content.active { display: block; }
+
+        .unit-header:hover { opacity: 0.95; }
+
+        /* Topic Section */
+        .topic {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .topic h3 {
+            color: var(--accent-secondary);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topic p { color: var(--text-secondary); margin-bottom: 15px; }
+
+        /* Code Block */
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .code-block code { color: var(--text-primary); }
+
+        .code-label {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: var(--bg-card);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .keyword { color: #ff7b72; }
+        .string { color: #a5d6ff; }
+        .comment { color: #8b949e; font-style: italic; }
+        .type { color: #79c0ff; }
+        .function { color: #d2a8ff; }
+        .number { color: #79c0ff; }
+
+        /* Practice Questions */
+        .practice {
+            background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(167,139,250,0.1));
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--accent);
+        }
+
+        .practice h4 {
+            color: var(--accent-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .practice ol {
+            padding-left: 20px;
+            color: var(--text-primary);
+        }
+
+        .practice li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        /* Checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .checkbox-container label {
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-container.completed label {
+            text-decoration: line-through;
+            color: var(--success);
+        }
+
+        /* Key Points */
+        .key-points {
+            background: rgba(63, 185, 80, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .key-points h4 { color: var(--success); margin-bottom: 10px; }
+        .key-points ul { padding-left: 20px; color: var(--text-secondary); }
+        .key-points li { margin-bottom: 5px; }
+
+        /* Warning */
+        .warning {
+            background: rgba(240, 136, 62, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .warning h4 { color: var(--warning); margin-bottom: 10px; }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(124,58,237,0.3); }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th { background: var(--bg-secondary); color: var(--accent-secondary); }
+        td { color: var(--text-secondary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8rem; }
+            .unit-header { flex-direction: column; gap: 10px; text-align: center; }
+            .btn-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🧠 Java Deep Learning</h1>
+            <p>Complete Guide with Deeplearning4j, DJL & TensorFlow Java</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Examples • Practice Questions • Real Projects</p>
+        </div>
+
+        <!-- Theme Toggle -->
+        <div class="theme-toggle" onclick="toggleTheme()"></div>
+
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-header">
+                <span style="font-weight: 600;">📊 Learning Progress</span>
+                <span class="progress-text" id="progressText">0 / 24 topics completed</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+            <div class="btn-group" style="margin-top: 15px;">
+                <button class="btn btn-secondary" onclick="resetProgress()">🔄 Reset Progress</button>
+                <button class="btn btn-secondary" onclick="expandAll()">📖 Expand All</button>
+                <button class="btn btn-secondary" onclick="collapseAll()">📕 Collapse All</button>
+            </div>
+        </div>
+
+        <!-- Unit 1: Deep Learning Fundamentals -->
+        <div class="unit">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <h2><span>📚</span> Unit 1: Deep Learning Fundamentals</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="unit-content">
+                <!-- Topic 1.1 -->
+                <div class="topic">
+                    <h3>🔬 1.1 What is Deep Learning?</h3>
+                    <p>Deep Learning is a subset of machine learning that uses neural networks with multiple layers (hence "deep") to learn hierarchical representations of data.</p>
+                    
+                    <div class="key-points">
+                        <h4>📌 Key Concepts</h4>
+                        <ul>
+                            <li><strong>Neural Network:</strong> Computational model inspired by biological neurons</li>
+                            <li><strong>Layers:</strong> Input, Hidden, and Output layers</li>
+                            <li><strong>Weights & Biases:</strong> Parameters learned during training</li>
+                            <li><strong>Activation Functions:</strong> Introduce non-linearity (ReLU, Sigmoid, Tanh)</li>
+                            <li><strong>Backpropagation:</strong> Algorithm to compute gradients</li>
+                            <li><strong>Gradient Descent:</strong> Optimization algorithm to minimize loss</li>
+                        </ul>
+                    </div>
+
+                    <div class="code-block">
+                        <span class="code-label">Neuron Mathematics</span>
+<pre><code><span class="comment">// A single neuron computes:</span>
+<span class="comment">// output = activation(Σ(weight_i * input_i) + bias)</span>
+
+<span class="keyword">import</span> java.util.Arrays;
+
+<span class="keyword">public class</span> <span class="type">Neuron</span> {
+    <span class="keyword">private double</span>[] weights;
+    <span class="keyword">private double</span> bias;
+    
+    <span class="keyword">public</span> <span class="function">Neuron</span>(<span class="keyword">int</span> inputSize) {
+        weights = <span class="keyword">new double</span>[inputSize];
+        bias = <span class="number">0.0</span>;
+        <span class="comment">// Initialize weights randomly</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < inputSize; i++) {
+            weights[i] = Math.random() * <span class="number">2</span> - <span class="number">1</span>;
+        }
+    }
+    
+    <span class="keyword">public double</span> <span class="function">activate</span>(<span class="keyword">double</span>[] inputs) {
+        <span class="keyword">double</span> sum = bias;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < inputs.length; i++) {
+            sum += weights[i] * inputs[i];
+        }
+        <span class="keyword">return</span> <span class="function">relu</span>(sum);  <span class="comment">// ReLU activation</span>
+    }
+    
+    <span class="keyword">private double</span> <span class="function">relu</span>(<span class="keyword">double</span> x) {
+        <span class="keyword">return</span> Math.max(<span class="number">0</span>, x);
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="code-block">
+                        <span class="code-label">Activation Functions</span>
+<pre><code><span class="keyword">public class</span> <span class="type">Activations</span> {
+    
+    <span class="comment">// ReLU: f(x) = max(0, x)</span>
+    <span class="keyword">public static double</span> <span class="function">relu</span>(<span class="keyword">double</span> x) {
+        <span class="keyword">return</span> Math.max(<span class="number">0</span>, x);
+    }
+    
+    <span class="comment">// Sigmoid: f(x) = 1 / (1 + e^(-x))</span>
+    <span class="keyword">public static double</span> <span class="function">sigmoid</span>(<span class="keyword">double</span> x) {
+        <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + Math.exp(-x));
+    }
+    
+    <span class="comment">// Tanh: f(x) = (e^x - e^(-x)) / (e^x + e^(-x))</span>
+    <span class="keyword">public static double</span> <span class="function">tanh</span>(<span class="keyword">double</span> x) {
+        <span class="keyword">return</span> Math.tanh(x);
+    }
+    
+    <span class="comment">// Softmax: converts logits to probabilities</span>
+    <span class="keyword">public static double</span>[] <span class="function">softmax</span>(<span class="keyword">double</span>[] logits) {
+        <span class="keyword">double</span>[] exp = <span class="keyword">new double</span>[logits.length];
+        <span class="keyword">double</span> sum = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < logits.length; i++) {
+            exp[i] = Math.exp(logits[i]);
+            sum += exp[i];
+        }
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < exp.length; i++) {
+            exp[i] /= sum;
+        }
+        <span class="keyword">return</span> exp;
+    }
+    
+    <span class="comment">// Derivatives for backpropagation</span>
+    <span class="keyword">public static double</span> <span class="function">reluDerivative</span>(<span class="keyword">double</span> x) {
+        <span class="keyword">return</span> x > <span class="number">0</span> ? <span class="number">1</span> : <span class="number">0</span>;
+    }
+    
+    <span class="keyword">public static double</span> <span class="function">sigmoidDerivative</span>(<span class="keyword">double</span> x) {
+        <span class="keyword">return</span> x * (<span class="number">1</span> - x);
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="warning">
+                        <h4>⚠️ Common Pitfalls</h4>
+                        <p><strong>Vanishing Gradients:</strong> Sigmoid/Tanh can cause gradients to become very small in deep networks. Use ReLU or its variants (LeakyReLU, ELU) for hidden layers.</p>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic1_1">
+                        <label for="topic1_1">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 1.2 -->
+                <div class="topic">
+                    <h3>📊 1.2 Loss Functions</h3>
+                    <p>Loss functions measure how far the model's predictions are from the actual values.</p>
+
+                    <div class="code-block">
+                        <span class="code-label">Common Loss Functions</span>
+<pre><code><span class="keyword">public class</span> <span class="type">LossFunctions</span> {
+    
+    <span class="comment">// Mean Squared Error (Regression)</span>
+    <span class="keyword">public static double</span> <span class="function">mse</span>(<span class="keyword">double</span>[] actual, <span class="keyword">double</span>[] predicted) {
+        <span class="keyword">double</span> sum = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < actual.length; i++) {
+            sum += Math.pow(actual[i] - predicted[i], <span class="number">2</span>);
+        }
+        <span class="keyword">return</span> sum / actual.length;
+    }
+    
+    <span class="comment">// Cross-Entropy Loss (Classification)</span>
+    <span class="keyword">public static double</span> <span class="function">crossEntropy</span>(<span class="keyword">double</span>[] actual, <span class="keyword">double</span>[] predicted) {
+        <span class="keyword">double</span> loss = <span class="number">0</span>;
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < actual.length; i++) {
+            loss -= actual[i] * Math.log(predicted[i] + <span class="number">1e-15</span>);
+        }
+        <span class="keyword">return</span> loss;
+    }
+    
+    <span class="comment">// Binary Cross-Entropy (Binary Classification)</span>
+    <span class="keyword">public static double</span> <span class="function">binaryCrossEntropy</span>(<span class="keyword">double</span> actual, <span class="keyword">double</span> predicted) {
+        <span class="keyword">return</span> -(actual * Math.log(predicted + <span class="number">1e-15</span>) + 
+                (<span class="number">1</span> - actual) * Math.log(<span class="number">1</span> - predicted + <span class="number">1e-15</span>));
+    }
+    
+    <span class="comment">// Categorical Cross-Entropy (Multi-class)</span>
+    <span class="keyword">public static double</span> <span class="function">categoricalCrossEntropy</span>(<span class="keyword">int</span> actual, <span class="keyword">double</span>[] predicted) {
+        <span class="keyword">return</span> -Math.log(predicted[actual] + <span class="number">1e-15</span>);
+    }
+}</code></pre>
+                    </div>
+
+                    <table>
+                        <tr><th>Loss Function</th><th>Use Case</th><th>Formula</th></tr>
+                        <tr><td>MSE</td><td>Regression</td><td>Σ(y - ŷ)² / n</td></tr>
+                        <tr><td>MAE</td><td>Regression (robust)</td><td>Σ|y - ŷ| / n</td></tr>
+                        <tr><td>Cross-Entropy</td><td>Multi-class</td><td>-Σ y·log(ŷ)</td></tr>
+                        <tr><td>Binary CE</td><td>Binary classification</td><td>-[y·log(ŷ) + (1-y)·log(1-ŷ)]</td></tr>
+                    </table>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic1_2">
+                        <label for="topic1_2">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 1.3 -->
+                <div class="topic">
+                    <h3>⚡ 1.3 Optimization Algorithms</h3>
+                    <p>Optimizers update model weights to minimize the loss function.</p>
+
+                    <div class="code-block">
+                        <span class="code-label">SGD & Adam Optimizer</span>
+<pre><code><span class="keyword">public class</span> <span class="type">SGDOptimizer</span> {
+    <span class="keyword">private double</span> learningRate;
+    
+    <span class="keyword">public</span> <span class="function">SGDOptimizer</span>(<span class="keyword">double</span> learningRate) {
+        <span class="keyword">this</span>.learningRate = learningRate;
+    }
+    
+    <span class="keyword">public double</span>[] <span class="function">update</span>(<span class="keyword">double</span>[] weights, <span class="keyword">double</span>[] gradients) {
+        <span class="keyword">double</span>[] newWeights = <span class="keyword">new double</span>[weights.length];
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < weights.length; i++) {
+            newWeights[i] = weights[i] - learningRate * gradients[i];
+        }
+        <span class="keyword">return</span> newWeights;
+    }
+}
+
+<span class="keyword">public class</span> <span class="type">AdamOptimizer</span> {
+    <span class="keyword">private double</span> learningRate, beta1, beta2, epsilon;
+    <span class="keyword">private double</span>[] m, v;  <span class="comment">// First & second moment estimates</span>
+    <span class="keyword">private int</span> t;  <span class="comment">// Time step</span>
+    
+    <span class="keyword">public</span> <span class="function">AdamOptimizer</span>(<span class="keyword">int</span> paramSize) {
+        <span class="keyword">this</span>.learningRate = <span class="number">0.001</span>;
+        <span class="keyword">this</span>.beta1 = <span class="number">0.9</span>;
+        <span class="keyword">this</span>.beta2 = <span class="number">0.999</span>;
+        <span class="keyword">this</span>.epsilon = <span class="number">1e-8</span>;
+        m = <span class="keyword">new double</span>[paramSize];
+        v = <span class="keyword">new double</span>[paramSize];
+        t = <span class="number">0</span>;
+    }
+    
+    <span class="keyword">public double</span>[] <span class="function">update</span>(<span class="keyword">double</span>[] weights, <span class="keyword">double</span>[] gradients) {
+        t++;
+        <span class="keyword">double</span>[] newWeights = <span class="keyword">new double</span>[weights.length];
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < weights.length; i++) {
+            <span class="comment">// Update biased first moment estimate</span>
+            m[i] = beta1 * m[i] + (<span class="number">1</span> - beta1) * gradients[i];
+            <span class="comment">// Update biased second raw moment estimate</span>
+            v[i] = beta2 * v[i] + (<span class="number">1</span> - beta2) * gradients[i] * gradients[i];
+            <span class="comment">// Bias-corrected estimates</span>
+            <span class="keyword">double</span> mHat = m[i] / (<span class="number">1</span> - Math.pow(beta1, t));
+            <span class="keyword">double</span> vHat = v[i] / (<span class="number">1</span> - Math.pow(beta2, t));
+            <span class="comment">// Update weights</span>
+            newWeights[i] = weights[i] - learningRate * mHat / (Math.sqrt(vHat) + epsilon);
+        }
+        <span class="keyword">return</span> newWeights;
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="practice">
+                        <h4>✏️ Practice Questions</h4>
+                        <ol>
+                            <li>Why does Adam optimizer often converge faster than basic SGD?</li>
+                            <li>What is the effect of learning rate too high vs too low?</li>
+                            <li>Implement a momentum-based SGD optimizer.</li>
+                            <li>When would you use learning rate scheduling?</li>
+                        </ol>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic1_3">
+                        <label for="topic1_3">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 1.4 -->
+                <div class="topic">
+                    <h3>🔄 1.4 Backpropagation Algorithm</h3>
+                    <p>Backpropagation computes gradients of the loss with respect to each weight using the chain rule.</p>
+
+                    <div class="code-block">
+                        <span class="code-label">Simple Backprop Example</span>
+<pre><code><span class="keyword">public class</span> <span class="type">SimpleNeuralNetwork</span> {
+    <span class="keyword">private double</span>[] inputLayer, hiddenLayer, outputLayer;
+    <span class="keyword">private double</span>[][] weightsIH, weightsHO;  <span class="comment">// Input-Hidden, Hidden-Output</span>
+    <span class="keyword">private double</span>[] biasH, biasO;
+    <span class="keyword">private double</span> learningRate = <span class="number">0.1</span>;
+    
+    <span class="keyword">public void</span> <span class="function">forward</span>(<span class="keyword">double</span>[] input) {
+        inputLayer = input;
+        
+        <span class="comment">// Hidden layer computation</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < hiddenLayer.length; j++) {
+            <span class="keyword">double</span> sum = biasH[j];
+            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < input.length; i++) {
+                sum += input[i] * weightsIH[i][j];
+            }
+            hiddenLayer[j] = <span class="function">sigmoid</span>(sum);
+        }
+        
+        <span class="comment">// Output layer computation</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < outputLayer.length; j++) {
+            <span class="keyword">double</span> sum = biasO[j];
+            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < hiddenLayer.length; i++) {
+                sum += hiddenLayer[i] * weightsHO[i][j];
+            }
+            outputLayer[j] = <span class="function">sigmoid</span>(sum);
+        }
+    }
+    
+    <span class="keyword">public void</span> <span class="function">backward</span>(<span class="keyword">double</span>[] target) {
+        <span class="comment">// Output layer errors</span>
+        <span class="keyword">double</span>[] outputErrors = <span class="keyword">new double</span>[outputLayer.length];
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < outputLayer.length; i++) {
+            outputErrors[i] = (target[i] - outputLayer[i]) * 
+                              <span class="function">sigmoidDerivative</span>(outputLayer[i]);
+        }
+        
+        <span class="comment">// Hidden layer errors</span>
+        <span class="keyword">double</span>[] hiddenErrors = <span class="keyword">new double</span>[hiddenLayer.length];
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < hiddenLayer.length; i++) {
+            <span class="keyword">double</span> error = <span class="number">0</span>;
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < outputLayer.length; j++) {
+                error += outputErrors[j] * weightsHO[i][j];
+            }
+            hiddenErrors[i] = error * <span class="function">sigmoidDerivative</span>(hiddenLayer[i]);
+        }
+        
+        <span class="comment">// Update weights (Hidden-Output)</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < hiddenLayer.length; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < outputLayer.length; j++) {
+                weightsHO[i][j] += learningRate * outputErrors[j] * hiddenLayer[i];
+            }
+        }
+        
+        <span class="comment">// Update weights (Input-Hidden)</span>
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < inputLayer.length; i++) {
+            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j < hiddenLayer.length; j++) {
+                weightsIH[i][j] += learningRate * hiddenErrors[j] * inputLayer[i];
+            }
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic1_4">
+                        <label for="topic1_4">Mark as completed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit 2: Deeplearning4j (DL4J) -->
+        <div class="unit">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <h2><span>🔧</span> Unit 2: Deeplearning4j (DL4J) Framework</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="unit-content">
+                <!-- Topic 2.1 -->
+                <div class="topic">
+                    <h3>📦 2.1 DL4J Setup & Configuration</h3>
+                    <p>Deeplearning4j is the most popular deep learning framework for Java/JVM.</p>
+
+                    <div class="code-block">
+                        <span class="code-label">Maven Dependencies</span>
+<pre><code><span class="comment">&lt;!-- pom.xml --&gt;</span>
+&lt;<span class="keyword">dependencies</span>&gt;
+    <span class="comment">&lt;!-- DL4J Core --&gt;</span>
+    &lt;<span class="type">dependency</span>&gt;
+        &lt;<span class="keyword">groupId</span>&gt;org.deeplearning4j&lt;/<span class="keyword">groupId</span>&gt;
+        &lt;<span class="keyword">artifactId</span>&gt;deeplearning4j-core&lt;/<span class="keyword">artifactId</span>&gt;
+        &lt;<span class="keyword">version</span>&gt;1.0.0-M2.1&lt;/<span class="keyword">version</span>&gt;
+    &lt;/<span class="type">dependency</span>&gt;
+    
+    <span class="comment">&lt;!-- ND4J Backend (CPU) --&gt;</span>
+    &lt;<span class="type">dependency</span>&gt;
+        &lt;<span class="keyword">groupId</span>&gt;org.nd4j&lt;/<span class="keyword">groupId</span>&gt;
+        &lt;<span class="keyword">artifactId</span>&gt;nd4j-native-platform&lt;/<span class="keyword">artifactId</span>&gt;
+        &lt;<span class="keyword">version</span>&gt;1.0.0-M2.1&lt;/<span class="keyword">version</span>&gt;
+    &lt;/<span class="type">dependency</span>&gt;
+    
+    <span class="comment">&lt;!-- ND4J Backend (GPU with CUDA) --&gt;</span>
+    &lt;<span class="comment">&lt;!--
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.nd4j&lt;/groupId&gt;
+        &lt;artifactId&gt;nd4j-cuda-11.6-platform&lt;/artifactId&gt;
+        &lt;version&gt;1.0.0-M2.1&lt;/version&gt;
+    &lt;/dependency&gt;
+    --&gt;</span>
+&lt;/<span class="keyword">dependencies</span>&gt;</code></pre>
+                    </div>
+
+                    <div class="code-block">
+                        <span class="code-label">Gradle Dependencies</span>
+<pre><code><span class="comment">// build.gradle</span>
+<span class="keyword">dependencies</span> {
+    implementation <span class="string">'org.deeplearning4j:deeplearning4j-core:1.0.0-M2.1'</span>
+    implementation <span class="string">'org.nd4j:nd4j-native-platform:1.0.0-M2.1'</span>
+    
+    <span class="comment">// For GPU support</span>
+    <span class="comment">// implementation 'org.nd4j:nd4j-cuda-11.6-platform:1.0.0-M2.1'</span>
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic2_1">
+                        <label for="topic2_1">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 2.2 -->
+                <div class="topic">
+                    <h3>🏗️ 2.2 Building Neural Networks with DL4J</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Multi-Layer Perceptron (MLP)</span>
+<pre><code><span class="keyword">import</span> org.deeplearning4j.nn.conf.MultiLayerConfiguration;
+<span class="keyword">import</span> org.deeplearning4j.nn.conf.NeuralNetConfiguration;
+<span class="keyword">import</span> org.deeplearning4j.nn.conf.layers.DenseLayer;
+<span class="keyword">import</span> org.deeplearning4j.nn.conf.layers.OutputLayer;
+<span class="keyword">import</span> org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+<span class="keyword">import</span> org.nd4j.linalg.activations.Activation;
+<span class="keyword">import</span> org.nd4j.linalg.learning.config.Adam;
+<span class="keyword">import</span> org.nd4j.linalg.lossfunctions.LossFunctions;
+
+<span class="keyword">public class</span> <span class="type">MLPClassifier</span> {
+    
+    <span class="keyword">public static</span> MultiLayerNetwork <span class="function">buildModel</span>(<span class="keyword">int</span> inputSize, <span class="keyword">int</span> numClasses) {
+        
+        MultiLayerConfiguration config = <span class="keyword">new</span> NeuralNetConfiguration.Builder()
+            .seed(<span class="number">42</span>)
+            .updater(<span class="keyword">new</span> Adam(<span class="number">0.001</span>))
+            .weightInit(<span class="keyword">new</span> Xavier())
+            .list()
+            
+            <span class="comment">// Hidden Layer 1</span>
+            .layer(<span class="number">0</span>, <span class="keyword">new</span> DenseLayer.Builder()
+                .nIn(inputSize)
+                .nOut(<span class="number">128</span>)
+                .activation(Activation.RELU)
+                .dropOut(<span class="number">0.3</span>)
+                .build())
+            
+            <span class="comment">// Hidden Layer 2</span>
+            .layer(<span class="number">1</span>, <span class="keyword">new</span> DenseLayer.Builder()
+                .nOut(<span class="number">64</span>)
+                .activation(Activation.RELU)
+                .dropOut(<span class="number">0.2</span>)
+                .build())
+            
+            <span class="comment">// Hidden Layer 3</span>
+            .layer(<span class="number">2</span>, <span class="keyword">new</span> DenseLayer.Builder()
+                .nOut(<span class="number">32</span>)
+                .activation(Activation.RELU)
+                .build())
+            
+            <span class="comment">// Output Layer</span>
+            .layer(<span class="number">3</span>, <span class="keyword">new</span> OutputLayer.Builder(
+                    LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .nOut(numClasses)
+                .activation(Activation.SOFTMAX)
+                .build())
+            
+            .build();
+        
+        MultiLayerNetwork model = <span class="keyword">new</span> MultiLayerNetwork(config);
+        model.init();
+        <span class="keyword">return</span> model;
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="code-block">
+                        <span class="code-label">Training the Model</span>
+<pre><code><span class="keyword">import</span> org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+<span class="keyword">import</span> org.nd4j.linalg.dataset.api.preprocessor.NormalizerStandardize;
+
+<span class="keyword">public class</span> <span class="type">ModelTrainer</span> {
+    
+    <span class="keyword">public static void</span> <span class="function">train</span>(MultiLayerNetwork model, 
+                             DataSetIterator trainData,
+                             DataSetIterator testData,
+                             <span class="keyword">int</span> epochs) {
+        
+        <span class="comment">// Normalize data</span>
+        NormalizerStandardize normalizer = <span class="keyword">new</span> NormalizerStandardize();
+        normalizer.fit(trainData);
+        trainData.setPreProcessor(normalizer);
+        testData.setPreProcessor(normalizer);
+        
+        System.out.println(<span class="string">"Starting training..."</span>);
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < epochs; i++) {
+            model.fit(trainData);
+            trainData.reset();
+            
+            <span class="comment">// Evaluate after each epoch</span>
+            Evaluation eval = model.evaluate(testData);
+            testData.reset();
+            
+            System.out.printf(<span class="string">"Epoch %d/%d - Accuracy: %.4f, F1: %.4f%n"</span>,
+                i + <span class="number">1</span>, epochs, eval.accuracy(), eval.f1());
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic2_2">
+                        <label for="topic2_2">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 2.3 -->
+                <div class="topic">
+                    <h3>🖼️ 2.3 CNN for Image Classification</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Convolutional Neural Network</span>
+<pre><code><span class="keyword">import</span> org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
+<span class="keyword">import</span> org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
+<span class="keyword">import</span> org.deeplearning4j.nn.conf.layers.GlobalPoolingLayer;
+
+<span class="keyword">public class</span> <span class="type">CNNImageClassifier</span> {
+    
+    <span class="keyword">public static</span> MultiLayerNetwork <span class="function">buildCNN</span>(<span class="keyword">int</span> channels, <span class="keyword">int</span> numClasses) {
+        
+        MultiLayerConfiguration config = <span class="keyword">new</span> NeuralNetConfiguration.Builder()
+            .seed(<span class="number">42</span>)
+            .updater(<span class="keyword">new</span> Adam(<span class="number">0.001</span>))
+            .weightInit(<span class="keyword">new</span> Xavier())
+            .list()
+            
+            <span class="comment">// Conv Layer 1: 32 filters, 3x3 kernel</span>
+            .layer(<span class="number">0</span>, <span class="keyword">new</span> ConvolutionLayer.Builder()
+                .kernelSize(<span class="number">3</span>, <span class="number">3</span>)
+                .stride(<span class="number">1</span>, <span class="number">1</span>)
+                .nIn(channels)
+                .nOut(<span class="number">32</span>)
+                .activation(Activation.RELU)
+                .build())
+            
+            <span class="comment">// Max Pool 1: 2x2</span>
+            .layer(<span class="number">1</span>, <span class="keyword">new</span> SubsamplingLayer.Builder()
+                .poolingType(SubsamplingLayer.PoolingType.MAX)
+                .kernelSize(<span class="number">2</span>, <span class="number">2</span>)
+                .stride(<span class="number">2</span>, <span class="number">2</span>)
+                .build())
+            
+            <span class="comment">// Conv Layer 2: 64 filters</span>
+            .layer(<span class="number">2</span>, <span class="keyword">new</span> ConvolutionLayer.Builder()
+                .kernelSize(<span class="number">3</span>, <span class="number">3</span>)
+                .nOut(<span class="number">64</span>)
+                .activation(Activation.RELU)
+                .build())
+            
+            .layer(<span class="number">3</span>, <span class="keyword">new</span> SubsamplingLayer.Builder()
+                .kernelSize(<span class="number">2</span>, <span class="number">2</span>)
+                .build())
+            
+            <span class="comment">// Conv Layer 3: 128 filters</span>
+            .layer(<span class="number">4</span>, <span class="keyword">new</span> ConvolutionLayer.Builder()
+                .kernelSize(<span class="number">3</span>, <span class="number">3</span>)
+                .nOut(<span class="number">128</span>)
+                .activation(Activation.RELU)
+                .build())
+            
+            <span class="comment">// Global Average Pooling</span>
+            .layer(<span class="number">5</span>, <span class="keyword">new</span> GlobalPoolingLayer.Builder()
+                .poolingType(SubsamplingLayer.PoolingType.AVG)
+                .build())
+            
+            <span class="comment">// Dense Layer</span>
+            .layer(<span class="number">6</span>, <span class="keyword">new</span> DenseLayer.Builder()
+                .nOut(<span class="number">128</span>)
+                .activation(Activation.RELU)
+                .dropOut(<span class="number">0.5</span>)
+                .build())
+            
+            <span class="comment">// Output Layer</span>
+            .layer(<span class="number">7</span>, <span class="keyword">new</span> OutputLayer.Builder(
+                    LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .nOut(numClasses)
+                .activation(Activation.SOFTMAX)
+                .build())
+            
+            .build();
+        
+        MultiLayerNetwork model = <span class="keyword">new</span> MultiLayerNetwork(config);
+        model.init();
+        <span class="keyword">return</span> model;
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic2_3">
+                        <label for="topic2_3">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 2.4 -->
+                <div class="topic">
+                    <h3>📝 2.4 RNN for Sequence Data</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">LSTM Network</span>
+<pre><code><span class="keyword">import</span> org.deeplearning4j.nn.conf.layers.recurrent.LSTM;
+<span class="keyword">import</span> org.nd4j.linalg.indexing.INDArrayIndex;
+
+<span class="keyword">public class</span> <span class="type">LSTMTextClassifier</span> {
+    
+    <span class="keyword">public static</span> MultiLayerNetwork <span class="function">buildLSTM</span>(
+            <span class="keyword">int</span> vocabSize, <span class="keyword">int</span> embeddingSize, <span class="keyword">int</span> numClasses) {
+        
+        MultiLayerConfiguration config = <span class="keyword">new</span> NeuralNetConfiguration.Builder()
+            .seed(<span class="number">42</span>)
+            .updater(<span class="keyword">new</span> Adam(<span class="number">0.001</span>))
+            .list()
+            
+            <span class="comment">// Embedding Layer</span>
+            .layer(<span class="number">0</span>, <span class="keyword">new</span> EmbeddingSequenceLayer.Builder()
+                .nIn(vocabSize + <span class="number">1</span>)
+                .nOut(embeddingSize)
+                .inputLength(<span class="number">-1</span>)  <span class="comment">// Variable length</span>
+                .build())
+            
+            <span class="comment">// LSTM Layer 1</span>
+            .layer(<span class="number">1</span>, <span class="keyword">new</span> LSTM.Builder()
+                .nIn(embeddingSize)
+                .nOut(<span class="number">128</span>)
+                .activation(Activation.TANH)
+                .build())
+            
+            <span class="comment">// LSTM Layer 2</span>
+            .layer(<span class="number">2</span>, <span class="keyword">new</span> LSTM.Builder()
+                .nOut(<span class="number">64</span>)
+                .activation(Activation.TANH)
+                .build())
+            
+            <span class="comment">// RNN Output</span>
+            .layer(<span class="number">3</span>, <span class="keyword">new</span> RnnOutputLayer.Builder(
+                    LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .nOut(numClasses)
+                .activation(Activation.SOFTMAX)
+                .build())
+            
+            .build();
+        
+        <span class="keyword">return new</span> MultiLayerNetwork(config);
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="practice">
+                        <h4>✏️ Practice Questions - DL4J</h4>
+                        <ol>
+                            <li>Build a sentiment classifier using LSTM on movie reviews</li>
+                            <li>Create a CNN to classify MNIST handwritten digits</li>
+                            <li>Implement transfer learning using pre-trained DL4J models</li>
+                            <li>Compare performance of MLP vs CNN on image data</li>
+                            <li>Build an autoencoder for anomaly detection</li>
+                        </ol>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic2_4">
+                        <label for="topic2_4">Mark as completed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit 3: Deep Java Library (DJL) -->
+        <div class="unit">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <h2><span>☁️</span> Unit 3: Deep Java Library (DJL)</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="unit-content">
+                <!-- Topic 3.1 -->
+                <div class="topic">
+                    <h3>🚀 3.1 DJL Overview & Setup</h3>
+                    <p>Deep Java Library (DJL) by AWS is a high-level framework that supports multiple backends (PyTorch, TensorFlow, MXNet).</p>
+
+                    <div class="code-block">
+                        <span class="code-label">Maven Setup</span>
+<pre><code><span class="comment">&lt;!-- pom.xml --&gt;</span>
+&lt;<span class="keyword">dependencyManagement</span>&gt;
+    &lt;<span class="keyword">dependencies</span>&gt;
+        &lt;<span class="type">dependency</span>&gt;
+            &lt;<span class="keyword">groupId</span>&gt;ai.djl&lt;/<span class="keyword">groupId</span>&gt;
+            &lt;<span class="keyword">artifactId</span>&gt;bom&lt;/<span class="keyword">artifactId</span>&gt;
+            &lt;<span class="keyword">version</span>&gt;0.27.0&lt;/<span class="keyword">version</span>&gt;
+            &lt;<span class="keyword">type</span>&gt;pom&lt;/<span class="keyword">type</span>&gt;
+        &lt;/<span class="type">dependency</span>&gt;
+    &lt;/<span class="keyword">dependencies</span>&gt;
+&lt;/<span class="keyword">dependencyManagement</span>&gt;
+
+&lt;<span class="keyword">dependencies</span>&gt;
+    <span class="comment">&lt;!-- DJL Core --&gt;</span>
+    &lt;<span class="type">dependency</span>&gt;
+        &lt;<span class="keyword">groupId</span>&gt;ai.djl&lt;/<span class="keyword">groupId</span>&gt;
+        &lt;<span class="keyword">artifactId</span>&gt;api&lt;/<span class="keyword">artifactId</span>&gt;
+    &lt;/<span class="type">dependency</span>&gt;
+    
+    <span class="comment">&lt;!-- PyTorch Engine --&gt;</span>
+    &lt;<span class="type">dependency</span>&gt;
+        &lt;<span class="keyword">groupId</span>&gt;ai.djl.pytorch&lt;/<span class="keyword">groupId</span>&gt;
+        &lt;<span class="keyword">artifactId</span>&gt;pytorch-engine&lt;/<span class="keyword">artifactId</span>&gt;
+    &lt;/<span class="type">dependency</span>&gt;
+    
+    <span class="comment">&lt;!-- ONNX Runtime (for ONNX models) --&gt;</span>
+    &lt;<span class="type">dependency</span>&gt;
+        &lt;<span class="keyword">groupId</span>&gt;ai.djl.onnxruntime&lt;/<span class="keyword">groupId</span>&gt;
+        &lt;<span class="keyword">artifactId</span>&gt;onnxruntime-engine&lt;/<span class="keyword">artifactId</span>&gt;
+    &lt;/<span class="type">dependency</span>&gt;
+&lt;/<span class="keyword">dependencies</span>&gt;</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic3_1">
+                        <label for="topic3_1">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 3.2 -->
+                <div class="topic">
+                    <h3>🔍 3.2 Image Classification with DJL</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Pre-trained Model Inference</span>
+<pre><code><span class="keyword">import</span> ai.djl.*;
+<span class="keyword">import</span> ai.djl.inference.Predictor;
+<span class="keyword">import</span> ai.djl.modality.cv.*;
+<span class="keyword">import</span> ai.djl.modality.cv.translator.*;
+<span class="keyword">import</span> ai.djl.repository.zoo.*;
+
+<span class="keyword">public class</span> <span class="type">ImageClassifierDJL</span> {
+    
+    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) <span class="keyword">throws</span> Exception {
+        
+        <span class="comment">// Load pre-trained ResNet-50 model</span>
+        ZooModel&lt;Image, Classifications&gt; model = Criteria.builder()
+            .setTypes(Image.<span class="keyword">class</span>, Classifications.<span class="keyword">class</span>)
+            .optApplication(Application.CV.IMAGE_CLASSIFICATION)
+            .optFilter(<span class="string">"dataset"</span>, <span class="string">"imagenet"</span>)
+            .optFilter(<span class="string">"layers"</span>, <span class="string">"50"</span>)
+            .optProgress听器(<span class="keyword">new</span> ProgressBar())
+            .loadModel();
+        
+        <span class="comment">// Classify an image</span>
+        <span class="keyword">try</span> (ZooModel&lt;Image, Classifications&gt; m = model;
+             Predictor&lt;Image, Classifications&gt; predictor = m.newPredictor()) {
+            
+            Image image = ImageFactory.getInstance()
+                .fromFile(Path.of(<span class="string">"cat.jpg"</span>));
+            
+            Classifications result = predictor.predict(image);
+            
+            System.out.println(<span class="string">"Predictions:"</span>);
+            result.getClassNames().forEach(name -> {
+                System.out.printf(<span class="string">"  %s: %.2f%%%n"</span>, 
+                    name, result.best().getProbability() * <span class="number">100</span>);
+            });
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic3_2">
+                        <label for="topic3_2">Mark as completed</label>
+                    </div>
+                </div>
+
+                <!-- Topic 3.3 -->
+                <div class="topic">
+                    <h3>💬 3.3 NLP with DJL</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Text Sentiment Analysis</span>
+<pre><code><span class="keyword">import</span> ai.djl.modality.nlp.*;
+<span class="keyword">import</span> ai.djl.modality.nlp.qa.*;
+
+<span class="keyword">public class</span> <span class="type">SentimentAnalyzerDJL</span> {
+    
+    <span class="keyword">public static void</span> <span class="function">analyzeSentiment</span>(String text) <span class="keyword">throws</span> Exception {
+        
+        <span class="comment">// Load BERT-based sentiment model</span>
+        ZooModel&lt;String, Classifications&gt; model = Criteria.builder()
+            .setTypes(String.<span class="keyword">class</span>, Classifications.<span class="keyword">class</span>)
+            .optApplication(Application.NLP.SENTIMENT_ANALYSIS)
+            .optFilter(<span class="string">"dataset"</span>, <span class="string">"sst"</span>)
+            .loadModel();
+        
+        <span class="keyword">try</span> (Predictor&lt;String, Classifications&gt; predictor = model.newPredictor()) {
+            Classifications result = predictor.predict(text);
+            System.out.println(<span class="string">"Sentiment: "</span> + result.best().getClassName());
+            System.out.printf(<span class="string">"Confidence: %.2f%%%n"</span>, 
+                result.best().getProbability() * <span class="number">100</span>);
+        }
+    }
+    
+    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) <span class="keyword">throws</span> Exception {
+        analyzeSentiment(<span class="string">"This movie was absolutely fantastic!"</span>);
+        analyzeSentiment(<span class="string">"The food was terrible and the service slow."</span>);
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="practice">
+                        <h4>✏️ Practice Questions - DJL</h4>
+                        <ol>
+                            <li>Build an object detection system using YOLOv5 with DJL</li>
+                            <li>Create a text summarization tool using BART/T5 models</li>
+                            <li>Implement style transfer on images</li>
+                            <li>Build a recommendation system using deep learning</li>
+                        </ol>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic3_3">
+                        <label for="topic3_3">Mark as completed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit 4: TensorFlow Java -->
+        <div class="unit">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <h2><span>🟠</span> Unit 4: TensorFlow Java</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="unit-content">
+                <div class="topic">
+                    <h3>⚙️ 4.1 TensorFlow Java Setup</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Dependencies</span>
+<pre><code><span class="comment">&lt;!-- TensorFlow Java --&gt;</span>
+&lt;<span class="type">dependency</span>&gt;
+    &lt;<span class="keyword">groupId</span>&gt;org.tensorflow&lt;/<span class="keyword">groupId</span>&gt;
+    &lt;<span class="keyword">artifactId</span>&gt;tensorflow-core-platform&lt;/<span class="keyword">artifactId</span>&gt;
+    &lt;<span class="keyword">version</span>&gt;0.5.0&lt;/<span class="keyword">version</span>&gt;
+&lt;/<span class="type">dependency</span>&gt;</code></pre>
+                    </div>
+                </div>
+
+                <div class="topic">
+                    <h3>📈 4.2 TensorFlow Java Example</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Linear Regression with TF Java</span>
+<pre><code><span class="keyword">import</span> org.tensorflow.*;
+<span class="keyword">import</span> org.tensorflow.ndarray.*;
+<span class="keyword">import</span> org.tensorflow.types.*;
+
+<span class="keyword">public class</span> <span class="type">TFLinearRegression</span> {
+    
+    <span class="keyword">public static void</span> <span class="function">main</span>(String[] args) {
+        <span class="keyword">try</span> (Graph g = <span class="keyword">new</span> Graph()) {
+            
+            <span class="comment">// Define variables</span>
+            <span class="keyword">try</span> (Scope scope = <span class="keyword">new</span> Scope(g).withName(<span class="string">"train"</span>)) {
+                <span class="comment">// Weight variable</span>
+                Output&lt;TFloat32&gt; W = tf.variable(
+                    scope.makeSubScope(<span class="string">"W"</span>),
+                    Shape.of(<span class="number">1</span>, <span class="number">1</span>),
+                    TFloat32.class
+                );
+                
+                <span class="comment">// Bias variable</span>
+                Output&lt;TFloat32&gt; b = tf.variable(
+                    scope.makeSubScope(<span class="string">"b"</span>),
+                    Shape.of(<span class="number">1</span>),
+                    TFloat32.class
+                );
+                
+                <span class="comment">// Input placeholder</span>
+                Output&lt;TFloat32&gt; x = tf.placeholder(TFloat32.class, 
+                    Shape.of(-<span class="number">1</span>, <span class="number">1</span>), <span class="string">"input"</span>);
+                
+                <span class="comment">// Model: y = W*x + b</span>
+                Output&lt;TFloat32&gt; y = tf.math.add(
+                    tf.linalg.matMul(x, W), b);
+                
+                <span class="comment">// Loss: MSE</span>
+                Output&lt;TFloat32&gt; yTrue = tf.placeholder(TFloat32.class, 
+                    Shape.of(-<span class="number">1</span>, <span class="number">1</span>), <span class="string">"label"</span>);
+                Output&lt;TFloat32&gt; loss = tf.math.mean(
+                    tf.math.square(tf.math.sub(y, yTrue)));
+                
+                <span class="comment">// Training with gradient descent</span>
+                Output&lt;TFloat32&gt; optimizer = tf.train.gradientDescent(<span class="number">0.01f</span>)
+                    .minimize(loss);
+                
+                <span class="comment">// Run training</span>
+                <span class="keyword">try</span> (Session s = <span class="keyword">new</span> Session(g)) {
+                    s.runner().addTarget(optimizer).run();
+                    System.out.println(<span class="string">"Training complete!"</span>);
+                }
+            }
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic4_1">
+                        <label for="topic4_1">Mark as completed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit 5: Advanced Topics & Projects -->
+        <div class="unit">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <h2><span>🎯</span> Unit 5: Advanced Topics & Projects</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="unit-content">
+                <div class="topic">
+                    <h3>🎨 5.1 GANs (Generative Adversarial Networks)</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Simple GAN Structure</span>
+<pre><code><span class="keyword">public class</span> <span class="type">SimpleGAN</span> {
+    <span class="keyword">private</span> MultiLayerNetwork generator;
+    <span class="keyword">private</span> MultiLayerNetwork discriminator;
+    
+    <span class="keyword">public void</span> <span class="function">buildGAN</span>(<span class="keyword">int</span> latentDim, <span class="keyword">int</span> outputDim) {
+        <span class="comment">// Generator: noise -> fake data</span>
+        generator = <span class="keyword">new</span> MultiLayerNetwork(<span class="keyword">new</span> NeuralNetConfiguration.Builder()
+            .updater(<span class="keyword">new</span> Adam(<span class="number">0.0002</span>))
+            .list()
+            .layer(<span class="keyword">new</span> DenseLayer.Builder()
+                .nIn(latentDim).nOut(<span class="number">256</span>)
+                .activation(Activation.RELU).build())
+            .layer(<span class="keyword">new</span> DenseLayer.Builder()
+                .nOut(<span class="number">512</span>).activation(Activation.RELU).build())
+            .layer(<span class="keyword">new</span> DenseLayer.Builder()
+                .nOut(outputDim).activation(Activation.TANH).build())
+            .build());
+        
+        <span class="comment">// Discriminator: data -> real/fake</span>
+        discriminator = <span class="keyword">new</span> MultiLayerNetwork(<span class="keyword">new</span> NeuralNetConfiguration.Builder()
+            .updater(<span class="keyword">new</span> Adam(<span class="number">0.0002</span>))
+            .list()
+            .layer(<span class="keyword">new</span> DenseLayer.Builder()
+                .nIn(outputDim).nOut(<span class="number">512</span>)
+                .activation(Activation.LEAKYRELU).build())
+            .layer(<span class="keyword">new</span> DenseLayer.Builder()
+                .nOut(<span class="number">256</span>).activation(Activation.LEAKYRELU).build())
+            .layer(<span class="keyword">new</span> OutputLayer.Builder(
+                LossFunctions.LossFunction.XENT)
+                .nOut(<span class="number">1</span>).activation(Activation.SIGMOID).build())
+            .build());
+    }
+    
+    <span class="keyword">public void</span> <span class="function">train</span>(<span class="keyword">int</span> epochs, <span class="keyword">int</span> batchSize) {
+        <span class="keyword">for</span> (<span class="keyword">int</span> epoch = <span class="number">0</span>; epoch < epochs; epoch++) {
+            <span class="comment">// Train discriminator on real data</span>
+            <span class="comment">// Train discriminator on fake data</span>
+            <span class="comment">// Train generator (fool discriminator)</span>
+            <span class="keyword">if</span> (epoch % <span class="number">100</span> == <span class="number">0</span>) {
+                System.out.printf(<span class="string">"Epoch %d: D_loss=%.4f, G_loss=%.4f%n"</span>,
+                    epoch, dLoss, gLoss);
+            }
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic5_1">
+                        <label for="topic5_1">Mark as completed</label>
+                    </div>
+                </div>
+
+                <div class="topic">
+                    <h3>🌐 5.2 Transformer Architecture</h3>
+
+                    <div class="code-block">
+                        <span class="code-label">Self-Attention Mechanism</span>
+<pre><code><span class="keyword">public class</span> <span class="type">SelfAttention</span> {
+    
+    <span class="keyword">public static</span> INDArray <span class="function">scaledDotProductAttention</span>(
+            INDArray Q, INDArray K, INDArray V) {
+        
+        <span class="keyword">int</span> dK = K.size(<span class="number">2</span>);
+        
+        <span class="comment">// Attention = softmax(Q * K^T / sqrt(dK)) * V</span>
+        INDArray scores = Nd4j.linalg.tensorMul(Q, K.transpose(<span class="number">0</span>, <span class="number">2</span>, <span class="number">1</span>));
+        scores = scores.div(Math.sqrt(dK));
+        INDArray attentionWeights = Nd4j.softmax(scores, <span class="number">-1</span>);
+        
+        <span class="keyword">return</span> Nd4j.linalg.tensorMul(attentionWeights, V);
+    }
+    
+    <span class="keyword">public static</span> INDArray[] <span class="function">multiHeadAttention</span>(
+            INDArray input, <span class="keyword">int</span> numHeads, <span class="keyword">int</span> dModel) {
+        
+        <span class="keyword">int</span> dK = dModel / numHeads;
+        INDArray[] heads = <span class="keyword">new</span> INDArray[numHeads];
+        
+        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i < numHeads; i++) {
+            <span class="comment">// Project Q, K, V for each head</span>
+            INDArray Q = linearProjection(input, dK);
+            INDArray K = linearProjection(input, dK);
+            INDArray V = linearProjection(input, dK);
+            
+            heads[i] = scaledDotProductAttention(Q, K, V);
+        }
+        
+        <span class="comment">// Concatenate heads and project</span>
+        INDArray concatenated = Nd4j.concat(<span class="number">2</span>, heads);
+        <span class="keyword">return new</span> INDArray[]{concatenated};
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic5_2">
+                        <label for="topic5_2">Mark as completed</label>
+                    </div>
+                </div>
+
+                <div class="topic">
+                    <h3>🏆 5.3 Final Projects</h3>
+                    
+                    <div class="key-points">
+                        <h4>🎯 Project Ideas</h4>
+                        <ul>
+                            <li><strong>Image Classifier:</strong> Build a CNN for CIFAR-10 dataset</li>
+                            <li><strong>Text Generator:</strong> LSTM-based text generation</li>
+                            <li><strong>Object Detection:</strong> YOLO implementation with DJL</li>
+                            <li><strong>Chatbot:</strong> Seq2Seq model for dialogue</li>
+                            <li><strong>Recommendation Engine:</strong> Neural collaborative filtering</li>
+                            <li><strong>Style Transfer:</strong> Neural style transfer on images</li>
+                        </ul>
+                    </div>
+
+                    <div class="practice">
+                        <h4>✏️ Final Project Requirements</h4>
+                        <ol>
+                            <li>Choose a project from above or propose your own</li>
+                            <li>Use at least 2 different architectures (CNN + RNN, etc.)</li>
+                            <li>Implement proper data preprocessing pipeline</li>
+                            <li>Include training visualization (loss curves)</li>
+                            <li>Deploy as a REST API using Spring Boot</li>
+                            <li>Write unit tests for model components</li>
+                            <li>Create a simple web UI for demo</li>
+                        </ol>
+                    </div>
+
+                    <div class="checkbox-container" onclick="toggleComplete(this)">
+                        <input type="checkbox" id="topic5_3">
+                        <label for="topic5_3">Mark as completed</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources -->
+        <div class="unit">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <h2><span>📚</span> Resources & References</h2>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="unit-content">
+                <div class="topic">
+                    <h3>🔗 Official Documentation</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                            📘 <strong>DL4J:</strong> <a href="https://deeplearning4j.org/docs/latest/" style="color: var(--accent);">deeplearning4j.org</a>
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                            📗 <strong>DJL:</strong> <a href="https://djl.ai/docs/" style="color: var(--accent);">djl.ai</a>
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                            📙 <strong>TensorFlow Java:</strong> <a href="https://www.tensorflow.org/jvm" style="color: var(--accent);">tensorflow.org/jvm</a>
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                            📕 <strong>ND4J:</strong> <a href="https://nd4j.org/" style="color: var(--accent);">nd4j.org</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="topic">
+                    <h3>📖 Recommended Books</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                            📚 "Deep Learning with Java" - Tom Hanlon
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--border);">
+                            📚 "Machine Learning in Java" - Ahamed Lubna
+                        </li>
+                        <li style="padding: 10px 0;">
+                            📚 "Neural Networks and Deep Learning" - Michael Nielsen (free online)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>🧠 Java Deep Learning Complete Guide</p>
+            <p style="margin-top: 10px;">Created for learning purposes • Track your progress above</p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            showToast(`Switched to ${next} mode`);
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Unit Toggle
+        function toggleUnit(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            
+            content.classList.toggle('active');
+            icon.textContent = content.classList.contains('active') ? '▲' : '▼';
+        }
+
+        // Expand/Collapse All
+        function expandAll() {
+            document.querySelectorAll('.unit-content').forEach(c => c.classList.add('active'));
+            document.querySelectorAll('.toggle-icon').forEach(i => i.textContent = '▲');
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.unit-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.toggle-icon').forEach(i => i.textContent = '▼');
+        }
+
+        // Progress Tracking
+        function toggleComplete(container) {
+            const checkbox = container.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            
+            if (checkbox.checked) {
+                container.classList.add('completed');
+                showToast('✅ Topic completed!');
+            } else {
+                container.classList.remove('completed');
+            }
+            
+            saveProgress();
+            updateProgressBar();
+        }
+
+        function saveProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]');
+            const progress = {};
+            checkboxes.forEach(cb => {
+                progress[cb.id] = cb.checked;
+            });
+            localStorage.setItem('deeplearning-progress', JSON.stringify(progress));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('deeplearning-progress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = progress[id];
+                        if (progress[id]) {
+                            checkbox.closest('.checkbox-container').classList.add('completed');
+                        }
+                    }
+                });
+            }
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const total = document.querySelectorAll('.checkbox-container input[type="checkbox"]').length;
+            const completed = document.querySelectorAll('.checkbox-container input[type="checkbox"]:checked').length;
+            const percent = Math.round((completed / total) * 100);
+            
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `${completed} / ${total} topics completed (${percent}%)`;
+        }
+
+        function resetProgress() {
+            if (confirm('Reset all progress?')) {
+                document.querySelectorAll('.checkbox-container input[type="checkbox"]').forEach(cb => {
+                    cb.checked = false;
+                    cb.closest('.checkbox-container').classList.remove('completed');
+                });
+                localStorage.removeItem('deeplearning-progress');
+                updateProgressBar();
+                showToast('🔄 Progress reset');
+            }
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+
+        // Initialize
+        loadProgress();
+    </script>
+</body>
+</html>

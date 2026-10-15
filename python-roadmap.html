@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>30-Day Python Mastery Roadmap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap');
+  
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    padding: 40px;
+    line-height: 1.6;
+  }
+  
+  .container { max-width: 1000px; margin: 0 auto; }
+  
+  .hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    padding: 50px;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  
+  .hero h1 {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: white;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero .subtitle {
+    font-size: 1.2em;
+    color: rgba(255,255,255,0.9);
+    margin-top: 15px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .goal-box {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .goal-box p {
+    color: white;
+    font-size: 1em;
+  }
+  
+  .week-section {
+    margin-bottom: 40px;
+  }
+  
+  .week-header {
+    background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 15px;
+    padding: 25px 30px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .week-header.week2 {
+    background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  }
+  
+  .week-header.week3 {
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+  }
+  
+  .week-header.week4 {
+    background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+  }
+  
+  .week-header.finale {
+    background: linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%);
+  }
+  
+  .week-header h2 {
+    color: white;
+    font-size: 1.4em;
+    font-weight: 700;
+  }
+  
+  .week-header .focus {
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9em;
+    font-style: italic;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #1a1a2e;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  
+  thead th {
+    background: #2d2d44;
+    color: #a78bfa;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  tbody tr {
+    border-bottom: 1px solid #2d2d44;
+    transition: all 0.3s ease;
+  }
+  
+  tbody tr:last-child { border-bottom: none; }
+  
+  tbody tr:hover {
+    background: #252540;
+  }
+  
+  tbody td {
+    padding: 15px 20px;
+    vertical-align: top;
+  }
+  
+  .day-num {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9em;
+  }
+  
+  .topic {
+    font-weight: 700;
+    color: #c084fc;
+    font-size: 1em;
+  }
+  
+  .learn {
+    color: #94a3b8;
+    font-size: 0.9em;
+  }
+  
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: #374151;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: #34d399;
+  }
+  
+  .task {
+    color: #fcd34d;
+    font-weight: 500;
+  }
+  
+  .project-row {
+    background: linear-gradient(90deg, rgba(139,92,246,0.15), rgba(236,72,153,0.15)) !important;
+  }
+  
+  .project-row .topic {
+    color: #f472b6;
+  }
+  
+  .section-divider {
+    height: 3px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+    border-radius: 2px;
+    margin: 50px 0;
+  }
+  
+  .routine-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 20px;
+    padding: 35px;
+    margin: 40px 0;
+    border: 1px solid #2d2d44;
+  }
+  
+  .routine-section h2 {
+    color: #34d399;
+    font-size: 1.5em;
+    margin-bottom: 25px;
+  }
+  
+  .routine-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(52, 211, 153, 0.05);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid #34d399;
+  }
+  
+  .routine-num {
+    background: #34d399;
+    color: #0f0f1a;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1em;
+    flex-shrink: 0;
+  }
+  
+  .routine-content h3 {
+    color: white;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+  }
+  
+  .routine-content p {
+    color: #94a3b8;
+    font-size: 0.95em;
+  }
+  
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+  }
+  
+  .resource-card {
+    background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid #374151;
+  }
+  
+  .resource-card h3 {
+    color: #60a5fa;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+  }
+  
+  .resource-card ul {
+    list-style: none;
+  }
+  
+  .resource-card li {
+    color: #94a3b8;
+    padding: 8px 0;
+    border-bottom: 1px solid #2d2d44;
+    font-size: 0.9em;
+  }
+  
+  .resource-card li:last-child { border-bottom: none; }
+  
+  .resource-card li::before {
+    content: '→';
+    color: #60a5fa;
+    margin-right: 10px;
+  }
+  
+  .rules-box {
+    background: linear-gradient(135deg, #fcd34d 0%, #f97316 100%);
+    border-radius: 20px;
+    padding: 35px;
+    margin: 40px 0;
+  }
+  
+  .rules-box h2 {
+    color: #1a1a2e;
+    font-size: 1.5em;
+    margin-bottom: 25px;
+  }
+  
+  .rule-item {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: #1a1a2e;
+    font-weight: 500;
+  }
+  
+  .rule-icon {
+    font-size: 1.5em;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    margin-top: 40px;
+  }
+  
+  .footer h2 {
+    color: white;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+  }
+  
+  .footer p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1em;
+  }
+  
+  .footer code {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    font-size: 1em;
+    padding: 5px 15px;
+  }
+  
+  @media print {
+    body { background: white; }
+    .hero, .week-header, .routine-section, .footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    table, .resource-card, .rules-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .day-num, .routine-num, .topic, .task, code { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="hero">
+  <h1>🐍 THE 30-DAY PYTHON MASTERY ROADMAP</h1>
+  <p class="subtitle">For Absolute Beginners</p>
+  <div class="goal-box">
+    <p><strong>🎯 Goal:</strong> Go from zero coding knowledge to building your own automation & data projects.</p>
+    <p><strong>⏰ Daily Commitment:</strong> 1 to 2 hours (45 mins theory/coding + 15 mins practice problems).</p>
+    <p><strong>📏 Rule:</strong> <em>Code every single day. Consistency beats intensity.</em></p>
+  </div>
+</div>
+
+<!-- WEEK 1 -->
+<div class="week-section">
+  <div class="week-header">
+    <h2>📅 WEEK 1: THE FOUNDATIONS (Days 1–7)</h2>
+    <span class="focus">Syntax, Variables, Data Types, Basic Operations</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Day</th><th>Topic</th><th>What You Must Learn</th><th>Daily Task</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="day-num">1</div></td><td class="topic">Setup & Hello World</td><td class="learn">Install Python (3.10+), VS Code. <code>print()</code>, comments, <code>input()</code>.</td><td class="task">Print your name, age, and a fun fact.</td></tr>
+      <tr><td><div class="day-num">2</div></td><td class="topic">Variables & Data Types</td><td class="learn"><code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>. Type conversion. <code>type()</code>.</td><td class="task">Take age input, calculate birth year.</td></tr>
+      <tr><td><div class="day-num">3</div></td><td class="topic">String Manipulation</td><td class="learn">Concatenation, f-strings, <code>.upper()</code>, <code>.lower()</code>, <code>.strip()</code>, slicing.</td><td class="task">Print initials and reversed name.</td></tr>
+      <tr><td><div class="day-num">4</div></td><td class="topic">Lists (Arrays)</td><td class="learn">Indexing, <code>.append()</code>, <code>.insert()</code>, <code>.remove()</code>, slicing.</td><td class="task">Create a grocery list, add/remove items.</td></tr>
+      <tr><td><div class="day-num">5</div></td><td class="topic">Tuples & Sets</td><td class="learn">Tuples (immutable), Sets (unique values, union/intersection).</td><td class="task">Create coordinates tuple & unique ID set.</td></tr>
+      <tr><td><div class="day-num">6</div></td><td class="topic">Dictionaries</td><td class="learn">Key-Value pairs, <code>.items()</code>, <code>.keys()</code>, <code>.values()</code>.</td><td class="task">Build a contact book with 3 contacts.</td></tr>
+      <tr class="project-row"><td><div class="day-num">7</div></td><td class="topic">⭐ REVIEW & PROJECT</td><td class="learn">Revise everything from Days 1-6.</td><td class="task">Project: BMI Calculator 🧮</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- WEEK 2 -->
+<div class="week-section">
+  <div class="week-header week2">
+    <h2>📅 WEEK 2: CONTROL FLOW & LOOPS (Days 8–14)</h2>
+    <span class="focus">Making decisions & automating repetitive tasks</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Day</th><th>Topic</th><th>What You Must Learn</th><th>Daily Task</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="day-num">8</div></td><td class="topic">If-Elif-Else</td><td class="learn">Comparison operators, <code>and</code>, <code>or</code>, <code>not</code>.</td><td class="task">Check if number is positive, negative, or zero.</td></tr>
+      <tr><td><div class="day-num">9</div></td><td class="topic">For Loops</td><td class="learn">Iterating over lists, strings, <code>range()</code>. Nested loops.</td><td class="task">Sum all numbers 1-100 with <code>range()</code>.</td></tr>
+      <tr><td><div class="day-num">10</div></td><td class="topic">While Loops</td><td class="learn"><code>while</code>, infinite loops, <code>break</code>, <code>continue</code>.</td><td class="task">Password guessing until "secret123".</td></tr>
+      <tr><td><div class="day-num">11</div></td><td class="topic">List Comprehensions</td><td class="learn">Pythonic one-liners: <code>[x**2 for x in range(10)]</code>.</td><td class="task">Squares for even numbers 0-20.</td></tr>
+      <tr><td><div class="day-num">12</div></td><td class="topic">Functions (Part 1)</td><td class="learn"><code>def</code>, <code>return</code>, parameters, default values.</td><td class="task">Write <code>multiply()</code> and <code>greet()</code>.</td></tr>
+      <tr><td><div class="day-num">13</div></td><td class="topic">Functions (Part 2)</td><td class="learn">Scope, <code>*args</code>, <code>**kwargs</code>.</td><td class="task">Function that averages any numbers.</td></tr>
+      <tr class="project-row"><td><div class="day-num">14</div></td><td class="topic">⭐ REVIEW & PROJECT</td><td class="learn">Revise loops and functions.</td><td class="task">Project: Guessing Game 🎮</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- WEEK 3 -->
+<div class="week-section">
+  <div class="week-header week3">
+    <h2>📅 WEEK 3: INTERMEDIATE SUPERPOWERS (Days 15–21)</h2>
+    <span class="focus">Error handling, files, modules, OOP basics</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Day</th><th>Topic</th><th>What You Must Learn</th><th>Daily Task</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="day-num">15</div></td><td class="topic">Error Handling</td><td class="learn"><code>try</code>, <code>except</code>, <code>else</code>, <code>finally</code>.</td><td class="task">Divide numbers safely (catch errors).</td></tr>
+      <tr><td><div class="day-num">16</div></td><td class="topic">File I/O (Read)</td><td class="learn"><code>open()</code>, <code>with</code> context manager.</td><td class="task">Count lines with "Python" in a file.</td></tr>
+      <tr><td><div class="day-num">17</div></td><td class="topic">File I/O (Write)</td><td class="learn"><code>"w"</code>, <code>"a"</code> modes, appending.</td><td class="task">Build a daily journal app.</td></tr>
+      <tr><td><div class="day-num">18</div></td><td class="topic">Modules & Pip</td><td class="learn"><code>import</code>, installing with <code>pip</code>.</td><td class="task">Dice roller + install <code>requests</code>.</td></tr>
+      <tr><td><div class="day-num">19</div></td><td class="topic">OOP (Classes)</td><td class="learn"><code>class</code>, <code>__init__</code>, <code>self</code>, methods.</td><td class="task">Create a <code>Car</code> class with <code>start()</code>.</td></tr>
+      <tr><td><div class="day-num">20</div></td><td class="topic">OOP (Inheritance)</td><td class="learn">Parent/Child classes, <code>super()</code>.</td><td class="task">Create <code>ElectricCar</code> inheriting from <code>Car</code>.</td></tr>
+      <tr class="project-row"><td><div class="day-num">21</div></td><td class="topic">⭐ REVIEW & PROJECT</td><td class="learn">Revise OOP and File I/O.</td><td class="task">Project: To-Do List App 📝</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- WEEK 4 -->
+<div class="week-section">
+  <div class="week-header week4">
+    <h2>📅 WEEK 4: REAL-WORLD APPLICATIONS (Days 22–28)</h2>
+    <span class="focus">APIs, Data Analysis, and Automation</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Day</th><th>Topic</th><th>What You Must Learn</th><th>Daily Task</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="day-num">22</div></td><td class="topic">HTTP Requests (APIs)</td><td class="learn"><code>requests</code> library, GET, JSON, status codes.</td><td class="task">Fetch a random joke from an API.</td></tr>
+      <tr><td><div class="day-num">23</div></td><td class="topic">Working with JSON</td><td class="learn"><code>json.loads()</code>, <code>json.dumps()</code>.</td><td class="task">Fetch live Bitcoin price.</td></tr>
+      <tr><td><div class="day-num">24</div></td><td class="topic">Intro to Pandas</td><td class="learn"><code>Series</code>, <code>DataFrame</code>, reading CSV.</td><td class="task">Create DataFrame from dictionary.</td></tr>
+      <tr><td><div class="day-num">25</div></td><td class="topic">Data Analysis</td><td class="learn">Filtering, <code>.groupby()</code>, <code>.mean()</code>.</td><td class="task">Load CSV, find column average.</td></tr>
+      <tr><td><div class="day-num">26</div></td><td class="topic">Intro to Matplotlib</td><td class="learn">Line, bar, scatter plots.</td><td class="task">Plot a simple line graph.</td></tr>
+      <tr><td><div class="day-num">27</div></td><td class="topic">Web Scraping</td><td class="learn"><code>BeautifulSoup</code>, parse HTML.</td><td class="task">Scrape top 5 article titles.</td></tr>
+      <tr class="project-row"><td><div class="day-num">28</div></td><td class="topic">⭐ REVIEW & PROJECT</td><td class="learn">Revise APIs, Pandas, Matplotlib.</td><td class="task">Project: Weather Dashboard 🌤️</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- FINALE -->
+<div class="week-section">
+  <div class="week-header finale">
+    <h2>📅 DAYS 29–30: THE GRAND FINALE (Capstone)</h2>
+    <span class="focus">One impressive portfolio project</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Day</th><th>Project Name</th><th>What to Build</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><div class="day-num">29</div></td><td class="topic">Plan & Code</td><td class="learn"><strong>Automated CSV Report Generator</strong> — Read messy CSV, clean with Pandas, analyze, generate chart (Matplotlib), save summary.</td></tr>
+      <tr><td><div class="day-num">30</div></td><td class="topic">Polish & Deploy</td><td class="learn">Add error handling, menu system. Upload to <strong>GitHub</strong> & share on LinkedIn. 🎉</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- DAILY ROUTINE -->
+<div class="routine-section">
+  <h2>🧠 DAILY ROUTINE</h2>
+  <div class="routine-item">
+    <div class="routine-num">1</div>
+    <div class="routine-content">
+      <h3>Learn (30 mins)</h3>
+      <p>Watch 1 short YouTube video or read documentation on today's topic.</p>
+    </div>
+  </div>
+  <div class="routine-item">
+    <div class="routine-num">2</div>
+    <div class="routine-content">
+      <h3>Type (30 mins)</h3>
+      <p>DO NOT COPY-PASTE. Manually type code examples to build muscle memory.</p>
+    </div>
+  </div>
+  <div class="routine-item">
+    <div class="routine-num">3</div>
+    <div class="routine-content">
+      <h3>Practice (20 mins)</h3>
+      <p>Solve 1-2 Easy-level problems on HackerRank or LeetCode.</p>
+    </div>
+  </div>
+  <div class="routine-item">
+    <div class="routine-num">4</div>
+    <div class="routine-content">
+      <h3>Debug</h3>
+      <p>When you get errors, read the red text carefully. Google it. This is how real developers learn!</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESOURCES -->
+<h2 style="color: #60a5fa; font-size: 1.5em; margin-bottom: 20px;">✅ ESSENTIAL RESOURCES</h2>
+<div class="resources-grid">
+  <div class="resource-card">
+    <h3>🏆 Practice Platforms</h3>
+    <ul>
+      <li>LeetCode (Easy level)</li>
+      <li>HackerRank</li>
+      <li>Codewars</li>
+    </ul>
+  </div>
+  <div class="resource-card">
+    <h3>📚 Cheatsheets</h3>
+    <ul>
+      <li>Python Official Docs</li>
+      <li>W3Schools</li>
+      <li>GeeksforGeeks</li>
+    </ul>
+  </div>
+  <div class="resource-card">
+    <h3>👥 Community</h3>
+    <ul>
+      <li>r/learnpython (Reddit)</li>
+      <li>Stack Overflow</li>
+      <li>PySlackers</li>
+    </ul>
+  </div>
+  <div class="resource-card">
+    <h3>🚀 Quick Links</h3>
+    <ul>
+      <li>VS Code Download</li>
+      <li>Python.org Downloads</li>
+      <li>GitHub (for Day 30)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- GOLDEN RULES -->
+<div class="rules-box">
+  <h2>🎯 GOLDEN RULES FOR THE 30 DAYS</h2>
+  <div class="rule-item">
+    <span class="rule-icon">1️⃣</span>
+    <span><strong>Don't skip a day.</strong> Missing one day breaks the habit. 15 minutes is better than 0.</span>
+  </div>
+  <div class="rule-item">
+    <span class="rule-icon">2️⃣</span>
+    <span><strong>Print everything.</strong> Use <code>print()</code> constantly to see what your code is doing.</span>
+  </div>
+  <div class="rule-item">
+    <span class="rule-icon">3️⃣</span>
+    <span><strong>Break problems down.</strong> Write steps in plain English first, then translate to Python.</span>
+  </div>
+  <div class="rule-item">
+    <span class="rule-icon">4️⃣</span>
+    <span><strong>Build public.</strong> Push your Day 30 project to GitHub. Employers love to see the journey!</span>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <h2>🚀 END OF ROADMAP</h2>
+  <p>Start Day 1 right now! Open your terminal and type:</p>
+  <p style="margin-top: 15px;"><code>print("Let's go!")</code></p>
+</div>
+
+</div>
+</body>
+</html>

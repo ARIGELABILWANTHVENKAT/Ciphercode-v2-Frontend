@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CipherCode — Compiler</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      /* ───────── ROOT ───────── */
+      :root {
+        --bg: #0a0a0f;
+        --bg-card: #111118;
+        --bg-input: #0d0d15;
+        --text: #f0f0f0;
+        --text-muted: #7a7a8a;
+        --cyan: #00d4ff;
+        --purple: #8b5cf6;
+        --pink: #ec4899;
+        --lime: #a3e635;
+        --orange: #fb923c;
+        --border: #222233;
+        --radius: 12px;
+        --mono: "DM Mono", monospace;
+        --sans: "Inter", sans-serif;
+        --shadow: 0 8px 32px rgba(0,0,0,0.5);
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ───────── NAVBAR ───────── */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 40px;
+        background: rgba(10, 10, 15, 0.8);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .nav-logo {
+        font-size: 20px;
+        font-weight: 900;
+        color: #fff;
+        text-decoration: none;
+        letter-spacing: -0.5px;
+      }
+      .nav-logo span {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        padding: 4px 10px;
+        border-radius: 8px;
+        color: #000;
+        margin-right: 6px;
+        font-weight: 900;
+      }
+      .nav-links { display: flex; gap: 28px; }
+      .nav-links a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: color 0.3s;
+        position: relative;
+      }
+      .nav-links a:hover { color: #fff; }
+      .nav-links a.active {
+        color: #fff;
+      }
+      .nav-links a.active::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--cyan), var(--purple));
+        border-radius: 2px;
+      }
+      .nav-actions { display: flex; align-items: center; gap: 16px; }
+      .nav-login-btn {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: 0.3s;
+        font-family: var(--sans);
+      }
+      .nav-login-btn:hover {
+        background: var(--cyan);
+        border-color: var(--cyan);
+        color: #000;
+      }
+
+      /* ───────── MAIN LAYOUT ───────── */
+      .compiler-wrapper {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 40px 60px;
+      }
+
+      /* ───────── HEADER ───────── */
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .page-header h1 {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+      .page-header h1 span { color: var(--cyan); }
+      .page-header .sub {
+        color: var(--text-muted);
+        font-size: 14px;
+      }
+
+      /* ──────── LANGUAGE SELECTOR ──────── */
+      .lang-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        box-shadow: var(--shadow);
+      }
+      .lang-section .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        font-weight: 700;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .lang-section .label span { color: var(--cyan); }
+
+      .lang-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .lang-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-radius: 30px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-muted);
+        font-family: var(--sans);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .lang-btn .icon { font-size: 16px; }
+      .lang-btn .badge {
+        font-size: 8px;
+        text-transform: uppercase;
+        padding: 1px 8px;
+        border-radius: 20px;
+        font-weight: 700;
+        background: rgba(0,212,255,0.1);
+        color: var(--cyan);
+        border: 1px solid rgba(0,212,255,0.1);
+      }
+      .lang-btn .badge.local {
+        background: rgba(163,230,53,0.1);
+        color: var(--lime);
+        border-color: rgba(163,230,53,0.1);
+      }
+      .lang-btn .badge.remote {
+        background: rgba(251,146,60,0.1);
+        color: var(--orange);
+        border-color: rgba(251,146,60,0.1);
+      }
+      .lang-btn:hover {
+        background: rgba(255,255,255,0.03);
+        border-color: rgba(255,255,255,0.1);
+        transform: translateY(-1px);
+      }
+      .lang-btn.active {
+        background: rgba(0,212,255,0.06);
+        border-color: var(--cyan);
+        color: #fff;
+      }
+      .lang-btn.active .badge { background: rgba(0,212,255,0.15); }
+
+      /* ──────── EDITOR ──────── */
+      .editor-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+      }
+
+      .editor-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 24px;
+        background: rgba(0,0,0,0.2);
+        border-bottom: 1px solid var(--border);
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .editor-toolbar .left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .editor-toolbar .left .lang-label {
+        font-weight: 700;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .editor-toolbar .left .lang-label .mode {
+        font-weight: 400;
+        font-size: 11px;
+        color: var(--text-muted);
+        padding: 2px 12px;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border);
+      }
+      .editor-toolbar .right {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      /* ─── NEW BUTTONS ─── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 22px;
+        border: none;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: var(--sans);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        overflow: hidden;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        color: #fff;
+        box-shadow: 0 0 20px rgba(0,212,255,0.1);
+      }
+      .btn-primary:hover {
+        transform: scale(1.04) translateY(-2px);
+        box-shadow: 0 0 40px rgba(0,212,255,0.25);
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: wait;
+        transform: none;
+      }
+      .btn-primary .shimmer {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+        background-size: 200% 100%;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      .btn-primary:hover .shimmer { opacity: 1; animation: shimmer 1.2s ease-in-out forwards; }
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      .btn-outline {
+        background: transparent;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+      }
+      .btn-outline:hover {
+        background: rgba(255,255,255,0.04);
+        border-color: rgba(255,255,255,0.15);
+        color: #fff;
+        transform: translateY(-2px);
+      }
+
+      .btn-download {
+        background: rgba(0,212,255,0.08);
+        color: var(--cyan);
+        border: 1px solid rgba(0,212,255,0.12);
+      }
+      .btn-download:hover {
+        background: rgba(0,212,255,0.15);
+        border-color: var(--cyan);
+        transform: translateY(-2px);
+      }
+
+      .btn-ai {
+        background: linear-gradient(135deg, rgba(139,92,246,0.12), rgba(236,72,153,0.12));
+        color: #a78bfa;
+        border: 1px solid rgba(139,92,246,0.15);
+        position: relative;
+      }
+      .btn-ai .soon {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 7px;
+        font-weight: 700;
+        padding: 1px 6px;
+        border-radius: 20px;
+        letter-spacing: 0.04em;
+      }
+      .btn-ai:hover {
+        background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.2));
+        border-color: rgba(139,92,246,0.3);
+        transform: translateY(-2px);
+      }
+
+      /* Editor textarea */
+      .editor-textarea {
+        width: 100%;
+        min-height: 400px;
+        background: var(--bg-input);
+        border: none;
+        padding: 24px 28px;
+        color: #e0e0e0;
+        font-family: var(--mono);
+        font-size: 15px;
+        line-height: 1.8;
+        resize: vertical;
+        outline: none;
+        tab-size: 4;
+      }
+      .editor-textarea:focus { box-shadow: inset 0 0 0 1px var(--cyan); }
+
+      /* ──────── CONSOLE ──────── */
+      .console-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .console-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 24px;
+        background: rgba(0,0,0,0.2);
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .console-header .title { display: flex; align-items: center; gap: 10px; }
+      .console-header .status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono);
+        font-weight: 400;
+        font-size: 11px;
+      }
+      .console-header .status .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+      }
+      .console-header .status .dot.ready { background: var(--lime); }
+      .console-header .status .dot.running { background: var(--orange); animation: pulse 0.8s infinite; }
+      .console-header .status .dot.error { background: #ef4444; }
+      @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+      .console-box {
+        padding: 16px 24px;
+        min-height: 120px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-family: var(--mono);
+        font-size: 14px;
+        color: #c0c0c0;
+        white-space: pre-wrap;
+        word-break: break-all;
+        background: var(--bg-input);
+      }
+      .console-box .label {
+        color: var(--text-muted);
+        font-size: 10px;
+        letter-spacing: 0.06em;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .console-box .label .ok { color: var(--lime); }
+      .console-box .label .err { color: #ef4444; }
+      .console-box.error { color: #ef4444; }
+
+      /* ─── INPUT ROW ─── */
+      .input-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 24px 16px;
+        background: var(--bg-input);
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+      }
+      .input-row .in-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-family: var(--mono);
+      }
+      .input-row .in-field {
+        flex: 1;
+        padding: 8px 14px;
+        background: rgba(0,0,0,0.3);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: #c0c0c0;
+        font-family: var(--mono);
+        font-size: 13px;
+        outline: none;
+        min-width: 140px;
+        transition: border-color 0.3s;
+      }
+      .input-row .in-field:focus { border-color: var(--cyan); }
+      .input-row .in-field::placeholder {
+        color: var(--text-muted);
+        font-family: var(--sans);
+        font-size: 12px;
+      }
+      .btn-send {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 8px;
+        background: var(--cyan);
+        color: #000;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-family: var(--sans);
+      }
+      .btn-send:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 30px rgba(0,212,255,0.2);
+      }
+
+      /* ─── STATUS BAR ─── */
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 24px;
+        background: rgba(0,0,0,0.3);
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text-muted);
+        font-family: var(--mono);
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .status-bar .item { display: flex; align-items: center; gap: 8px; }
+      .status-bar .item .cy { color: var(--cyan); }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 768px) {
+        .compiler-wrapper { padding: 16px; }
+        .navbar { padding: 12px 16px; }
+        .nav-links { gap: 14px; }
+        .nav-links a { font-size: 12px; }
+        .page-header h1 { font-size: 22px; }
+        .lang-grid { gap: 6px; }
+        .lang-btn { font-size: 11px; padding: 6px 12px; }
+        .lang-btn .icon { font-size: 14px; }
+        .editor-toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+        .editor-toolbar .right { justify-content: stretch; }
+        .btn { flex: 1; justify-content: center; padding: 8px 16px; font-size: 12px; }
+        .editor-textarea { min-height: 250px; font-size: 13px; padding: 16px; }
+        .console-box { min-height: 80px; max-height: 160px; font-size: 13px; padding: 12px 16px; }
+        .input-row { flex-direction: column; align-items: stretch; }
+        .input-row .in-field { min-width: auto; }
+        .status-bar { font-size: 10px; }
+      }
+      @media (max-width: 480px) {
+        .lang-grid { gap: 4px; }
+        .lang-btn { font-size: 10px; padding: 4px 10px; }
+        .lang-btn .badge { display: none; }
+        .page-header h1 { font-size: 18px; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- ─── NAVBAR ─── -->
+    <nav class="navbar">
+      <a href="index.html" class="nav-logo"><span>&lt;/&gt;</span> CIPHER<span style="color:var(--cyan);">CODE</span></a>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="compiler.html" class="active">Compiler</a>
+        <a href="tools.html">Tools</a>
+      </div>
+      <div class="nav-actions">
+        <button class="nav-login-btn" onclick="sessionStorage.removeItem('isLoggedIn');window.location.href='index.html'">Logout ↗</button>
+      </div>
+    </nav>
+
+    <!-- ─── COMPILER ─── -->
+    <div class="compiler-wrapper">
+
+      <!-- Header -->
+      <div class="page-header">
+        <div>
+          <h1>⚡ Code <span>Compiler</span></h1>
+          <div class="sub">30+ languages • Run code instantly</div>
+        </div>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="lang-section">
+        <div class="label">📌 Select language <span>— click to switch</span></div>
+        <div class="lang-grid" id="langGrid">
+          <button class="lang-btn active" data-lang="python">
+            <span class="icon">🐍</span>
+            <span>Python</span>
+            <span class="badge local">Local</span>
+          </button>
+          <button class="lang-btn" data-lang="javascript">
+            <span class="icon">🟨</span>
+            <span>JavaScript</span>
+            <span class="badge local">Local</span>
+          </button>
+          <button class="lang-btn" data-lang="html">
+            <span class="icon">🌐</span>
+            <span>HTML/CSS</span>
+            <span class="badge local">Local</span>
+          </button>
+          <button class="lang-btn" data-lang="java">
+            <span class="icon">☕</span>
+            <span>Java</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="c">
+            <span class="icon">⚙️</span>
+            <span>C</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="cpp">
+            <span class="icon">⚡</span>
+            <span>C++</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="csharp">
+            <span class="icon">🔷</span>
+            <span>C#</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="go">
+            <span class="icon">🐹</span>
+            <span>Go</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="rust">
+            <span class="icon">🦀</span>
+            <span>Rust</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="ruby">
+            <span class="icon">💎</span>
+            <span>Ruby</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="php">
+            <span class="icon">🐘</span>
+            <span>PHP</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="typescript">
+            <span class="icon">🟦</span>
+            <span>TypeScript</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="kotlin">
+            <span class="icon">🎯</span>
+            <span>Kotlin</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="swift">
+            <span class="icon">🦅</span>
+            <span>Swift</span>
+            <span class="badge remote">Remote</span>
+          </button>
+          <button class="lang-btn" data-lang="bash">
+            <span class="icon">💻</span>
+            <span>Bash</span>
+            <span class="badge remote">Remote</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Editor -->
+      <div class="editor-section">
+        <div class="editor-toolbar">
+          <div class="left">
+            <div class="lang-label">
+              <span id="currentIcon">🐍</span>
+              <span id="currentLabel">Python</span>
+              <span class="mode" id="currentMode">Local</span>
+            </div>
+          </div>
+          <div class="right">
+            <button class="btn btn-ai" id="aiBtn">🧠 AI <span class="soon">SOON</span></button>
+            <button class="btn btn-download" id="downloadBtn">⬇ Download</button>
+            <button class="btn btn-outline" id="clearBtn">↺ Reset</button>
+            <button class="btn btn-primary" id="runBtn"><span class="shimmer"></span> ▶ Run</button>
+          </div>
+        </div>
+        <textarea class="editor-textarea" id="codeEditor" spellcheck="false"></textarea>
+      </div>
+
+      <!-- Console -->
+      <div class="console-section">
+        <div class="console-header">
+          <span class="title">📋 Output</span>
+          <span class="status">
+            <span class="dot ready" id="statusDot"></span>
+            <span id="statusText">Ready</span>
+          </span>
+        </div>
+        <div class="console-box" id="consoleOutput">
+          <div class="label"><span>OUTPUT</span><span class="ok">● READY</span></div>
+          <span style="color:var(--text-muted);">// Welcome to CipherCode Compiler</span>
+          <span style="color:var(--text-muted);">// Select a language, write code, click Run</span>
+          <span style="color:var(--lime);">✅ 30+ languages supported</span>
+        </div>
+        <div class="input-row">
+          <span class="in-label">⌨ Input</span>
+          <input class="in-field" id="inputField" placeholder="Type input here (e.g. 5 10)" />
+          <button class="btn-send" id="sendBtn">Send</button>
+        </div>
+        <div class="status-bar">
+          <span class="item"><span class="cy">●</span> <span id="statusLang">🐍 Python</span></span>
+          <span class="item" id="statusCursor">Ln 1, Col 1</span>
+          <span class="item"><span class="cy">⚡</span> <span id="statusApi">Local</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      /* ============================================================
+         CIPHERCODE COMPILER — FINAL WORKING VERSION (WANDBOX)
+         ============================================================ */
+
+      // ─── LANGUAGE DATA ───
+      const LANG_DATA = {
+        python: {
+          icon: '🐍', label: 'Python', mode: 'Local',
+          template: `# Python — try it out!
+numbers = [1, 2, 3, 4, 5]
+squared = [n ** 2 for n in numbers]
+print("Squares:", squared)
+
+def fib(n):
+    if n <= 1: return n
+    return fib(n-1) + fib(n-2)
+print("Fib(10):", fib(10))`,
+          ext: 'py', local: true
+        },
+        javascript: {
+          icon: '🟨', label: 'JavaScript', mode: 'Local',
+          template: `// JavaScript
+const numbers = [1, 2, 3, 4, 5];
+const squared = numbers.map(n => n ** 2);
+console.log("Squares:", squared);
+
+function fib(n) {
+    if (n <= 1) return n;
+    return fib(n-1) + fib(n-2);
+}
+console.log("Fib(10):", fib(10));`,
+          ext: 'js', local: true
+        },
+        html: {
+          icon: '🌐', label: 'HTML/CSS', mode: 'Local',
+          template: `<style>
+  body { font-family: system-ui; background: #101611; color: #f3f2ea; padding: 24px; }
+  .card { max-width: 320px; padding: 18px; border: 1px solid #a3e635; }
+  .card strong { color: #a3e635; }
+</style>
+<div class="card">
+  <strong>Secure UI</strong>
+  <p>Preview your HTML and CSS locally.</p>
+</div>`,
+          ext: 'html', local: true
+        },
+        java: {
+          icon: '☕', label: 'Java', mode: 'Remote',
+          template: `// Java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int a = sc.nextInt();
+        int b = sc.nextInt();
+        System.out.println(a + b);
+    }
+}`,
+          ext: 'java', local: false, compiler: 'java'
+        },
+        c: {
+          icon: '⚙️', label: 'C', mode: 'Remote',
+          template: `#include <stdio.h>
+int main() {
+    int a, b;
+    scanf("%d %d", &a, &b);
+    printf("%d\\n", a + b);
+    return 0;
+}`,
+          ext: 'c', local: false, compiler: 'gcc'
+        },
+        cpp: {
+          icon: '⚡', label: 'C++', mode: 'Remote',
+          template: `#include <iostream>
+using namespace std;
+int main() {
+    int a, b;
+    cin >> a >> b;
+    cout << a + b << endl;
+    return 0;
+}`,
+          ext: 'cpp', local: false, compiler: 'g++'
+        },
+        csharp: {
+          icon: '🔷', label: 'C#', mode: 'Remote',
+          template: `using System;
+class Program {
+    static void Main() {
+        string[] parts = Console.ReadLine().Split(' ');
+        int a = int.Parse(parts[0]);
+        int b = int.Parse(parts[1]);
+        Console.WriteLine(a + b);
+    }
+}`,
+          ext: 'cs', local: false, compiler: 'mono'
+        },
+        go: {
+          icon: '🐹', label: 'Go', mode: 'Remote',
+          template: `package main
+import "fmt"
+func main() {
+    var a, b int
+    fmt.Scan(&a, &b)
+    fmt.Println(a + b)
+}`,
+          ext: 'go', local: false, compiler: 'go'
+        },
+        rust: {
+          icon: '🦀', label: 'Rust', mode: 'Remote',
+          template: `use std::io;
+fn main() {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).unwrap();
+    let nums: Vec<i32> = input.trim().split_whitespace().map(|x| x.parse().unwrap()).collect();
+    println!("{}", nums[0] + nums[1]);
+}`,
+          ext: 'rs', local: false, compiler: 'rustc'
+        },
+        ruby: {
+          icon: '💎', label: 'Ruby', mode: 'Remote',
+          template: `a, b = gets.split.map(&:to_i)
+puts a + b`,
+          ext: 'rb', local: false, compiler: 'ruby'
+        },
+        php: {
+          icon: '🐘', label: 'PHP', mode: 'Remote',
+          template: `<?php
+$handle = fopen("php://stdin", "r");
+$line = fgets($handle);
+list($a, $b) = explode(' ', trim($line));
+echo $a + $b;
+?>`,
+          ext: 'php', local: false, compiler: 'php'
+        },
+        typescript: {
+          icon: '🟦', label: 'TypeScript', mode: 'Remote',
+          template: `// TypeScript
+const message: string = "Hello from TypeScript!";
+console.log(message);
+const numbers: number[] = [1, 2, 3, 4, 5];
+const squares = numbers.map(n => n * n);
+console.log("Squares:", squares);`,
+          ext: 'ts', local: false, compiler: 'tsc'
+        },
+        kotlin: {
+          icon: '🎯', label: 'Kotlin', mode: 'Remote',
+          template: `// Kotlin
+fun main() {
+    val (a, b) = readLine()!!.split(' ').map { it.toInt() }
+    println(a + b)
+}`,
+          ext: 'kt', local: false, compiler: 'kotlin'
+        },
+        swift: {
+          icon: '🦅', label: 'Swift', mode: 'Remote',
+          template: `// Swift
+let line = readLine()!
+let nums = line.split(separator: " ").map { Int($0)! }
+print(nums[0] + nums[1])`,
+          ext: 'swift', local: false, compiler: 'swift'
+        },
+        bash: {
+          icon: '💻', label: 'Bash', mode: 'Remote',
+          template: `#!/bin/bash
+read a b
+echo $((a + b))`,
+          ext: 'sh', local: false, compiler: 'bash'
+        }
+      };
+
+      // ─── DOM REFS ───
+      const langBtns = document.querySelectorAll('.lang-btn');
+      const codeEditor = document.getElementById('codeEditor');
+      const runBtn = document.getElementById('runBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const consoleOutput = document.getElementById('consoleOutput');
+      const inputField = document.getElementById('inputField');
+      const sendBtn = document.getElementById('sendBtn');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
+      const statusLang = document.getElementById('statusLang');
+      const statusCursor = document.getElementById('statusCursor');
+      const statusApi = document.getElementById('statusApi');
+      const currentIcon = document.getElementById('currentIcon');
+      const currentLabel = document.getElementById('currentLabel');
+      const currentMode = document.getElementById('currentMode');
+      const aiBtn = document.getElementById('aiBtn');
+
+      // ─── STATE ───
+      let currentLang = 'python';
+      let isRunning = false;
+      let storedInput = '';
+
+      // ─── INIT ───
+      function init() {
+        loadLanguage('python');
+        setupListeners();
+        updateCursor();
+        updateStatus('ready', 'Ready');
+        statusApi.textContent = 'Local';
+        inputField.placeholder = 'Type input here (e.g. 5 10)';
+        aiBtn.addEventListener('click', () => {
+          alert('🧠 AI Assistant is coming in the next update! Stay tuned.');
+        });
+      }
+
+      // ─── LOAD LANGUAGE ───
+      function loadLanguage(lang) {
+        const data = LANG_DATA[lang];
+        if (!data) return;
+        currentLang = lang;
+        codeEditor.value = data.template;
+        currentIcon.textContent = data.icon;
+        currentLabel.textContent = data.label;
+        currentMode.textContent = data.mode;
+        statusLang.textContent = `${data.icon} ${data.label}`;
+        statusApi.textContent = data.local ? 'Local' : 'Remote API';
+
+        langBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+
+        consoleOutput.innerHTML = `
+          <div class="label"><span>OUTPUT</span><span class="ok">● READY</span></div>
+          <span style="color:var(--text-muted);">// Switched to ${data.icon} ${data.label}</span>
+          <span style="color:var(--text-muted);">// ${data.local ? 'Runs locally' : 'Runs via Wandbox API'}</span>
+        `;
+        consoleOutput.className = 'console-box';
+        updateCursor();
+      }
+
+      // ─── UPDATE CURSOR ───
+      function updateCursor() {
+        const text = codeEditor.value;
+        const pos = codeEditor.selectionStart || 0;
+        const lines = text.substr(0, pos).split('\n');
+        const line = lines.length;
+        const col = lines[lines.length - 1].length + 1;
+        statusCursor.textContent = `Ln ${line}, Col ${col}`;
+      }
+
+      // ─── UPDATE STATUS ───
+      function updateStatus(state, text) {
+        statusDot.className = `dot ${state}`;
+        statusText.textContent = text;
+      }
+
+      // ─── SET CONSOLE OUTPUT ───
+      function setConsoleOutput(text, isError = false) {
+        consoleOutput.className = 'console-box' + (isError ? ' error' : '');
+        consoleOutput.innerHTML = `
+          <div class="label"><span>OUTPUT</span><span class="${isError ? 'err' : 'ok'}">● ${isError ? 'ERROR' : 'DONE'}</span></div>
+          ${text}
+        `;
+      }
+
+      // ─── SEND INPUT ───
+      function sendInput() {
+        const val = inputField.value.trim();
+        if (val) {
+          storedInput = val;
+          setConsoleOutput(`⌨ Input: ${val}\n\n${consoleOutput.textContent}`);
+          inputField.value = '';
+          updateStatus('ready', 'Input saved');
+        }
+      }
+
+      // ─── DOWNLOAD CODE ───
+      function downloadCode() {
+        const data = LANG_DATA[currentLang];
+        if (!data) return;
+        const code = codeEditor.value;
+        const blob = new Blob([code], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `main.${data.ext}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(`✅ Downloaded main.${data.ext}`);
+      }
+
+      function showToast(msg) {
+        const t = document.createElement('div');
+        t.style.cssText = `position:fixed; bottom:80px; right:20px; background:#111118; border:1px solid #222233; color:#f0f0f0; padding:10px 20px; border-radius:8px; font-size:13px; z-index:9999; box-shadow:0 8px 24px rgba(0,0,0,0.5); transition:opacity 0.3s; font-family:'Inter',sans-serif;`;
+        t.textContent = msg;
+        document.body.appendChild(t);
+        setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 2500);
+      }
+
+      // ─── RUN CODE ───
+      async function runCode() {
+        if (isRunning) return;
+        isRunning = true;
+        runBtn.disabled = true;
+        runBtn.innerHTML = '<span class="shimmer"></span> ⏳ Running...';
+        updateStatus('running', 'Running...');
+        setConsoleOutput('Running...');
+
+        const lang = currentLang;
+        const data = LANG_DATA[lang];
+        const code = codeEditor.value;
+        const stdin = storedInput || '';
+
+        try {
+          if (data.local && lang === 'python') {
+            await runPython(code);
+          } else if (data.local && lang === 'javascript') {
+            await runJavaScript(code);
+          } else if (data.local && lang === 'html') {
+            await runHTML(code);
+          } else {
+            await runWandbox(lang, code, stdin, data.compiler || lang);
+          }
+        } catch (error) {
+          setConsoleOutput(`Error: ${error.message}`, true);
+          updateStatus('error', 'Error');
+        } finally {
+          isRunning = false;
+          runBtn.disabled = false;
+          runBtn.innerHTML = '<span class="shimmer"></span> ▶ Run';
+          if (statusText.textContent !== 'Error') {
+            updateStatus('ready', 'Ready');
+          }
+        }
+      }
+
+      // ─── PYTHON RUNNER ───
+      function runPython(code) {
+        return new Promise((resolve, reject) => {
+          let worker = new Worker('python-worker.js');
+          let timeout = setTimeout(() => {
+            worker.terminate();
+            reject(new Error('Python execution timed out'));
+          }, 15000);
+          worker.onmessage = ({ data }) => {
+            if (data.type === 'loading') {
+              setConsoleOutput('Loading Python runtime...');
+            } else if (data.type === 'result') {
+              clearTimeout(timeout);
+              setConsoleOutput(data.output || 'Program finished with no output.');
+              updateStatus('ready', 'Ready');
+              worker.terminate();
+              resolve();
+            } else if (data.type === 'error') {
+              clearTimeout(timeout);
+              setConsoleOutput(data.message, true);
+              updateStatus('error', 'Error');
+              worker.terminate();
+              reject(new Error(data.message));
+            }
+          };
+          worker.onerror = (error) => {
+            clearTimeout(timeout);
+            setConsoleOutput(`Worker error: ${error.message}`, true);
+            updateStatus('error', 'Error');
+            worker.terminate();
+            reject(error);
+          };
+          worker.postMessage({ type: 'run', source: code });
+        });
+      }
+
+      // ─── JAVASCRIPT RUNNER ───
+      function runJavaScript(code) {
+        return new Promise((resolve, reject) => {
+          let worker = new Worker('js-worker.js');
+          let timeout = setTimeout(() => {
+            worker.terminate();
+            reject(new Error('JavaScript execution timed out'));
+          }, 10000);
+          worker.onmessage = ({ data }) => {
+            if (data.type === 'result') {
+              clearTimeout(timeout);
+              setConsoleOutput(data.output || 'Program finished with no output.');
+              updateStatus('ready', 'Ready');
+              worker.terminate();
+              resolve();
+            } else if (data.type === 'error') {
+              clearTimeout(timeout);
+              setConsoleOutput(data.message, true);
+              updateStatus('error', 'Error');
+              worker.terminate();
+              reject(new Error(data.message));
+            }
+          };
+          worker.onerror = (error) => {
+            clearTimeout(timeout);
+            setConsoleOutput(`Worker error: ${error.message}`, true);
+            updateStatus('error', 'Error');
+            worker.terminate();
+            reject(error);
+          };
+          worker.postMessage({ type: 'run', source: code });
+        });
+      }
+
+      // ─── HTML RUNNER ───
+      function runHTML(code) {
+        return new Promise((resolve) => {
+          const win = window.open('', '_blank');
+          if (win) {
+            win.document.write(code);
+            win.document.close();
+            setConsoleOutput('✅ HTML preview opened in a new tab.');
+            updateStatus('ready', 'Ready');
+          } else {
+            setConsoleOutput('⚠️ Popup blocked. Please allow popups for this site.', true);
+          }
+          resolve();
+        });
+      }
+
+      // ─── WANDBOX RUNNER (NO AUTH) ───
+      async function runWandbox(lang, code, stdin, compiler) {
+        const endpoint = 'https://wandbox.org/api/compile.json';
+        const payload = {
+          code: code,
+          compiler: compiler,
+          stdin: stdin || '',
+          options: '',
+          'runtime-option': ''
+        };
+
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Wandbox API error (${response.status}): ${errText}`);
+          }
+
+          const result = await response.json();
+
+          if (result.compiler_message && result.compiler_message.trim()) {
+            setConsoleOutput(result.compiler_message.trim(), true);
+            updateStatus('error', 'Compilation Error');
+            return;
+          }
+
+          const output = result.program_output || '';
+          if (output.trim()) {
+            setConsoleOutput(output.trim());
+            updateStatus('ready', 'Ready');
+          } else {
+            setConsoleOutput('Program finished with no output.');
+            updateStatus('ready', 'Ready');
+          }
+        } catch (error) {
+          if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            throw new Error('Remote API is unreachable. Check your internet connection.');
+          }
+          throw error;
+        }
+      }
+
+      // ─── EVENT LISTENERS ───
+      function setupListeners() {
+        langBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const lang = btn.dataset.lang;
+            if (lang && LANG_DATA[lang]) {
+              loadLanguage(lang);
+            }
+          });
+        });
+
+        runBtn.addEventListener('click', runCode);
+
+        clearBtn.addEventListener('click', () => {
+          const data = LANG_DATA[currentLang];
+          if (data) {
+            codeEditor.value = data.template;
+            setConsoleOutput(`// Reset to ${data.icon} ${data.label} template`);
+            updateStatus('ready', 'Reset');
+            updateCursor();
+          }
+        });
+
+        downloadBtn.addEventListener('click', downloadCode);
+
+        sendBtn.addEventListener('click', sendInput);
+        inputField.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            sendInput();
+          }
+        });
+
+        codeEditor.addEventListener('input', updateCursor);
+        codeEditor.addEventListener('click', updateCursor);
+        codeEditor.addEventListener('keyup', updateCursor);
+
+        codeEditor.addEventListener('keydown', (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            runCode();
+          }
+        });
+      }
+
+      // ─── START ───
+      init();
+    </script>
+  </body>
+</html>

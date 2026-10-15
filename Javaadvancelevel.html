@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Advanced – Complete Study</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #111111;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888888;
+            --accent: #f89820;
+            --accent-secondary: #c41e3a;
+            --border: #333333;
+            --success: #00ff88;
+            --code-bg: #0d1117;
+        }
+        [data-theme="light"] {
+            --bg-primary: #f0f0f0;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --accent: #e76f00;
+            --accent-secondary: #c41e3a;
+            --border: #e0e0e0;
+            --success: #00cc6a;
+            --code-bg: #f0f0f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px;
+            width: 60px; height: 30px;
+            background: var(--bg-card);
+            border: 2px solid var(--accent);
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .theme-toggle::after {
+            content: '🌙';
+            position: absolute;
+            width: 24px; height: 24px;
+            background: var(--accent);
+            border-radius: 50%;
+            top: 1px; left: 2px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        [data-theme="light"] .theme-toggle::after { content: '☀️'; left: 30px; }
+        header {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; color: white; }
+        .badge { display: inline-block; background: rgba(255,255,255,0.2); padding: 5px 15px; border-radius: 20px; font-size: 0.9rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .dashboard {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+        }
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .dashboard h2 { color: var(--accent); font-size: 1.3rem; }
+        .ring-container { position: relative; width: 80px; height: 80px; }
+        .ring-container svg { transform: rotate(-90deg); }
+        .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+        .ring-progress { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 226; stroke-dashoffset: 226; transition: stroke-dashoffset 0.5s ease; }
+        .ring-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .stat-item { text-align: center; padding: 15px; background: var(--bg-primary); border-radius: 10px; }
+        .stat-item .value { font-size: 1.8rem; font-weight: bold; color: var(--accent); }
+        .stat-item .label { font-size: 0.9rem; color: var(--text-secondary); }
+        .unit-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--accent);
+        }
+        .unit-header h2 { color: var(--accent); font-size: 1.8rem; }
+        .unit-badge { background: var(--accent); color: white; padding: 5px 20px; border-radius: 20px; font-size: 0.85rem; }
+        .topic {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent);
+        }
+        .topic h3 { color: var(--accent-secondary); font-size: 1.3rem; margin-bottom: 15px; }
+        .topic p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 15px; }
+        .topic .sub-topic { color: var(--text-primary); font-weight: 600; margin-top: 15px; display: block; font-size: 1rem; }
+        .topic ul, .topic ol { padding-left: 25px; color: var(--text-secondary); line-height: 1.8; }
+        .topic li { margin-bottom: 5px; }
+        .code-block {
+            background: var(--code-bg);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            border-left: 4px solid var(--accent);
+            color: #79c0ff;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .practice-box {
+            background: rgba(248,152,32,0.1);
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .practice-box h4 { color: var(--accent); margin-bottom: 10px; font-size: 1rem; }
+        .practice-box p, .practice-box li { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+        .practice-box ol { padding-left: 25px; }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .checkbox-container input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent); cursor: pointer; }
+        .checkbox-container label { color: var(--text-secondary); cursor: pointer; user-select: none; }
+        .checkbox-container.completed label { text-decoration: line-through; color: var(--success); }
+        .reset-btn {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .reset-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 20px rgba(255,107,107,0.4); }
+        .toast {
+            position: fixed;
+            bottom: 80px; right: 20px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+        .toast.show { transform: translateX(0); }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } .unit-header { flex-direction: column; gap: 10px; text-align: center; } }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()"></div>
+    <header>
+        <h1>☕ Java Advanced – Complete Study</h1>
+        <span class="badge">Units 5-8 • Professional Level</span>
+    </header>
+    <div class="container">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h2>📊 Your Learning Progress</h2>
+                <div style="position: relative; width: 80px; height: 80px;">
+                    <svg width="80" height="80" style="transform: rotate(-90deg);">
+                        <circle fill="none" stroke="var(--border)" stroke-width="8" cx="40" cy="40" r="36"></circle>
+                        <circle fill="none" stroke="var(--accent)" stroke-width="8" cx="40" cy="40" r="36" stroke-linecap="round" stroke-dasharray="226" id="progressRing" style="stroke-dashoffset: 226; transition: stroke-dashoffset 0.5s ease;"></circle>
+                    </svg>
+                    <span class="ring-text" id="progressPercent">0%</span>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="value" id="completedCount">0</div><div class="label">Completed</div></div>
+                <div class="stat-item"><div class="value" id="totalTopics">20</div><div class="label">Total Topics</div></div>
+                <div class="stat-item"><div class="value" id="unitsCompleted">0/4</div><div class="label">Units</div></div>
+            </div>
+        </div>
+
+        <!-- UNIT 5 -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📓 Unit 5: Collections Framework</h2><span class="unit-badge">Weeks 18-22</span></div>
+
+            <div class="topic">
+                <h3>5.1 List Interface (ArrayList, LinkedList)</h3>
+                <p>The <strong>List</strong> interface represents an ordered collection (sequence). It allows duplicate elements and maintains insertion order. The two most widely used implementations are <code>ArrayList</code> and <code>LinkedList</code>.</p>
+                <span class="sub-topic">🔹 ArrayList vs LinkedList:</span>
+                <ul>
+                    <li><strong>ArrayList</strong> uses a dynamic array internally. It provides fast random access (O(1)) but slow insertions/removals in the middle (O(n)) as it shifts elements.</li>
+                    <li><strong>LinkedList</strong> uses a doubly-linked list. It provides fast insertions/removals (O(1) at ends) but slower random access (O(n)).</li>
+                </ul>
+                <span class="sub-topic">🔹 Common Operations:</span>
+                <ul>
+                    <li><code>add(element)</code>, <code>add(index, element)</code></li>
+                    <li><code>get(index)</code>, <code>remove(index)</code>, <code>remove(Object)</code></li>
+                    <li><code>size()</code>, <code>isEmpty()</code>, <code>contains(Object)</code></li>
+                </ul>
+                <div class="code-block">
+// ArrayList Example
+List&lt;String&gt; names = new ArrayList&lt;&gt;();
+names.add("Alice");
+names.add("Bob");
+names.add(1, "Charlie");
+
+System.out.println(names.get(0)); // Alice
+System.out.println(names.size()); // 3
+
+// LinkedList Example
+List&lt;Integer&gt; numbers = new LinkedList&lt;&gt;();
+numbers.add(10);
+numbers.add(20);
+numbers.remove(0);
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create an ArrayList of 5 integers and find the sum.</li>
+                        <li>Implement a program that removes duplicates from an ArrayList.</li>
+                        <li>When would you choose LinkedList over ArrayList?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a1"><label for="a1">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>5.2 Set Interface (HashSet, TreeSet)</h3>
+                <p>A <strong>Set</strong> is a collection that does not allow duplicate elements. It models the mathematical set abstraction.</p>
+                <span class="sub-topic">🔹 HashSet vs TreeSet:</span>
+                <ul>
+                    <li><strong>HashSet:</strong> Uses hash table. O(1) performance for add, remove, contains. Order is not guaranteed.</li>
+                    <li><strong>TreeSet:</strong> Uses a red-black tree. O(log n) performance. Elements are sorted in natural order or by a comparator.</li>
+                </ul>
+                <span class="sub-topic">🔹 Important Methods:</span>
+                <ul>
+                    <li><code>add(E e)</code></li>
+                    <li><code>remove(Object o)</code></li>
+                    <li><code>contains(Object o)</code></li>
+                    <li><code>size()</code></li>
+                </ul>
+                <div class="code-block">
+// HashSet Example
+Set&lt;String&gt; names = new HashSet&lt;&gt;();
+names.add("Alice");
+names.add("Bob");
+names.add("Alice"); // Duplicate, ignored
+System.out.println(names.size()); // 2
+
+// TreeSet Example
+Set&lt;Integer&gt; scores = new TreeSet&lt;&gt;();
+scores.add(85);
+scores.add(92);
+scores.add(78);
+System.out.println(scores); // [78, 85, 92] sorted
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to remove duplicates from a list using a Set.</li>
+                        <li>Find the intersection of two Sets.</li>
+                        <li>When would you use TreeSet instead of HashSet?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a2"><label for="a2">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>5.3 Map Interface (HashMap, TreeMap)</h3>
+                <p>A <strong>Map</strong> stores key-value pairs. Each key maps to exactly one value.</p>
+                <span class="sub-topic">🔹 HashMap vs TreeMap:</span>
+                <ul>
+                    <li><strong>HashMap:</strong> O(1) performance, order not guaranteed.</li>
+                    <li><strong>TreeMap:</strong> O(log n) performance, sorted by keys.</li>
+                </ul>
+                <span class="sub-topic">🔹 Common Methods:</span>
+                <ul>
+                    <li><code>put(key, value)</code></li>
+                    <li><code>get(key)</code></li>
+                    <li><code>remove(key)</code></li>
+                    <li><code>keySet()</code>, <code>values()</code>, <code>entrySet()</code></li>
+                </ul>
+                <div class="code-block">
+// HashMap Example
+Map&lt;String, Integer&gt; scores = new HashMap&lt;&gt;();
+scores.put("Alice", 95);
+scores.put("Bob", 87);
+scores.put("Charlie", 92);
+
+System.out.println(scores.get("Alice")); // 95
+
+for (Map.Entry&lt;String, Integer&gt; entry : scores.entrySet()) {
+    System.out.println(entry.getKey() + ": " + entry.getValue());
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a HashMap to store student roll numbers and names.</li>
+                        <li>Write a program to count the frequency of each word in a sentence using a Map.</li>
+                        <li>What is the difference between HashMap and TreeMap?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a3"><label for="a3">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>5.4 Iterators & Generics</h3>
+                <p><strong>Iterators</strong> provide a way to traverse elements in a collection. <strong>Generics</strong> add type safety to collections.</p>
+                <span class="sub-topic">🔹 Iterator Interface:</span>
+                <ul>
+                    <li><code>hasNext()</code> → checks if there are more elements.</li>
+                    <li><code>next()</code> → returns the next element.</li>
+                    <li><code>remove()</code> → removes the current element.</li>
+                </ul>
+                <span class="sub-topic">🔹 Generics:</span>
+                <ul>
+                    <li>Define type parameters using angle brackets: <code>List&lt;String&gt;</code>.</li>
+                    <li>Wildcards: <code>? extends T</code> (upper bound), <code>? super T</code> (lower bound).</li>
+                </ul>
+                <div class="code-block">
+// Iterator Example
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+list.add("A");
+list.add("B");
+list.add("C");
+
+Iterator&lt;String&gt; it = list.iterator();
+while (it.hasNext()) {
+    System.out.println(it.next());
+}
+
+// Generic Method
+public static &lt;T&gt; void printArray(T[] array) {
+    for (T element : array) {
+        System.out.print(element + " ");
+    }
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program that uses an Iterator to remove elements from a list.</li>
+                        <li>Create a generic method that swaps two elements in an array.</li>
+                        <li>Explain the use of wildcards in generics.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a4"><label for="a4">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>5.5 Comparable & Comparator</h3>
+                <p>Used to define custom sorting order for objects.</p>
+                <span class="sub-topic">🔹 Comparable:</span>
+                <ul>
+                    <li>Defines <code>compareTo(T o)</code> method.</li>
+                    <li>Provides natural ordering (e.g., sorted by name).</li>
+                </ul>
+                <span class="sub-topic">🔹 Comparator:</span>
+                <ul>
+                    <li>Defines <code>compare(T o1, T o2)</code> method.</li>
+                    <li>Used for custom sorting (e.g., sort by age, then name).</li>
+                </ul>
+                <div class="code-block">
+// Comparable Example
+class Student implements Comparable&lt;Student&gt; {
+    String name;
+    int age;
+
+    Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public int compareTo(Student other) {
+        return this.age - other.age; // Sort by age
+    }
+}
+
+// Comparator Example
+Comparator&lt;Student&gt; nameComparator = new Comparator&lt;Student&gt;() {
+    @Override
+    public int compare(Student s1, Student s2) {
+        return s1.name.compareTo(s2.name);
+    }
+};
+
+// Sorting
+List&lt;Student&gt; students = new ArrayList&lt;&gt;();
+Collections.sort(students); // Uses Comparable
+Collections.sort(students, nameComparator); // Uses Comparator
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a class 'Employee' with name, salary, and department. Implement Comparable to sort by salary.</li>
+                        <li>Write a Comparator to sort Employees by department then by name.</li>
+                        <li>What is the difference between Comparable and Comparator?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a5"><label for="a5">Mark as completed</label></div>
+            </div>
+        </div>
+
+        <!-- UNIT 6: Multithreading -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📒 Unit 6: Multithreading & Concurrency</h2><span class="unit-badge">Weeks 23-27</span></div>
+
+            <div class="topic">
+                <h3>6.1 Thread Class & Runnable</h3>
+                <p>Multithreading allows concurrent execution of multiple parts of a program. Java provides two ways to create threads:</p>
+                <span class="sub-topic">🔹 Extending Thread class:</span>
+                <ul>
+                    <li>Override the <code>run()</code> method.</li>
+                    <li>Call <code>start()</code> to begin execution.</li>
+                </ul>
+                <span class="sub-topic">🔹 Implementing Runnable interface:</span>
+                <ul>
+                    <li>Implement <code>run()</code> method.</li>
+                    <li>Pass the Runnable instance to a Thread constructor.</li>
+                </ul>
+                <div class="code-block">
+// Extending Thread
+class MyThread extends Thread {
+    public void run() {
+        System.out.println("Thread running: " + Thread.currentThread().getName());
+    }
+}
+
+// Implementing Runnable
+class MyRunnable implements Runnable {
+    public void run() {
+        System.out.println("Runnable running: " + Thread.currentThread().getName());
+    }
+}
+
+// Usage
+MyThread t1 = new MyThread();
+t1.start();
+
+Thread t2 = new Thread(new MyRunnable());
+t2.start();
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create two threads that print numbers 1-10 alternately.</li>
+                        <li>When would you choose Runnable over extending Thread?</li>
+                        <li>What is the difference between run() and start() methods?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a6"><label for="a6">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>6.2 Synchronization</h3>
+                <p>Synchronization prevents thread interference and memory consistency errors when multiple threads access shared resources.</p>
+                <span class="sub-topic">🔹 synchronized keyword:</span>
+                <ul>
+                    <li>Can be applied to methods or blocks.</li>
+                    <li>Locks on the object (method) or the specified object (block).</li>
+                </ul>
+                <span class="sub-topic">🔹 Lock Interface:</span>
+                <ul>
+                    <li><code>ReentrantLock</code> provides more flexibility than synchronized.</li>
+                    <li><code>lock()</code>, <code>unlock()</code> methods.</li>
+                </ul>
+                <div class="code-block">
+// Synchronized Method
+class Counter {
+    private int count = 0;
+
+    public synchronized void increment() {
+        count++;
+    }
+
+    public int getCount() { return count; }
+}
+
+// Synchronized Block
+synchronized (this) {
+    // critical section
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program where two threads increment a shared counter with synchronization.</li>
+                        <li>What is deadlock? Give an example.</li>
+                        <li>Compare synchronized vs ReentrantLock.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a7"><label for="a7">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>6.3 Thread Lifecycle & States</h3>
+                <p>A thread goes through several states during its lifetime.</p>
+                <span class="sub-topic">🔹 Thread States:</span>
+                <ul>
+                    <li><strong>NEW:</strong> Created but not started.</li>
+                    <li><strong>RUNNABLE:</strong> Ready to run or running.</li>
+                    <li><strong>BLOCKED:</strong> Waiting for a monitor lock.</li>
+                    <li><strong>WAITING:</strong> Waiting indefinitely for another thread.</li>
+                    <li><strong>TIMED_WAITING:</strong> Waiting for a specified time.</li>
+                    <li><strong>TERMINATED:</strong> Completed execution.</li>
+                </ul>
+                <div class="code-block">
+// Thread State Example
+Thread t = new Thread(() -> {
+    try {
+        Thread.sleep(1000);
+    } catch (InterruptedException e) {}
+});
+
+System.out.println(t.getState()); // NEW
+t.start();
+System.out.println(t.getState()); // RUNNABLE (may be RUNNABLE)
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to observe different thread states.</li>
+                        <li>What is the difference between WAITING and TIMED_WAITING?</li>
+                        <li>How can you transition a thread from WAITING to RUNNABLE?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a8"><label for="a8">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>6.4 Thread Pools (ExecutorService)</h3>
+                <p>Thread pools manage a pool of worker threads, improving performance by reusing threads.</p>
+                <span class="sub-topic">🔹 Benefits:</span>
+                <ul>
+                    <li>Reduces thread creation overhead.</li>
+                    <li>Limits the number of concurrent threads.</li>
+                    <li>Provides better resource management.</li>
+                </ul>
+                <span class="sub-topic">🔹 Types:</span>
+                <ul>
+                    <li><code>FixedThreadPool</code> → fixed number of threads.</li>
+                    <li><code>CachedThreadPool</code> → creates new threads as needed.</li>
+                    <li><code>ScheduledThreadPool</code> → for scheduled tasks.</li>
+                </ul>
+                <div class="code-block">
+// Thread Pool Example
+ExecutorService executor = Executors.newFixedThreadPool(3);
+
+for (int i = 0; i < 5; i++) {
+    executor.submit(() -> {
+        System.out.println("Task executed by: " + Thread.currentThread().getName());
+    });
+}
+
+executor.shutdown();
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a thread pool to process 10 tasks with 3 threads.</li>
+                        <li>What is the difference between FixedThreadPool and CachedThreadPool?</li>
+                        <li>How do you submit a task that returns a value using Callable?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a9"><label for="a9">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>6.5 Concurrent Collections</h3>
+                <p>Concurrent collections are thread-safe implementations designed for multithreaded environments.</p>
+                <span class="sub-topic">🔹 Common Classes:</span>
+                <ul>
+                    <li><strong>ConcurrentHashMap:</strong> Thread-safe version of HashMap.</li>
+                    <li><strong>CopyOnWriteArrayList:</strong> Thread-safe List, copies the underlying array on modification.</li>
+                    <li><strong>BlockingQueue:</strong> Queue that supports operations that wait for the queue to become non-empty.</li>
+                </ul>
+                <div class="code-block">
+// ConcurrentHashMap Example
+ConcurrentHashMap&lt;String, Integer&gt; map = new ConcurrentHashMap&lt;&gt;();
+map.put("A", 1);
+map.putIfAbsent("B", 2);
+
+// CopyOnWriteArrayList Example
+List&lt;String&gt; list = new CopyOnWriteArrayList&lt;&gt;();
+list.add("X");
+list.add("Y");
+
+// BlockingQueue Example
+BlockingQueue&lt;Integer&gt; queue = new ArrayBlockingQueue&lt;&gt;(10);
+queue.put(1);
+int value = queue.take();
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Compare ConcurrentHashMap with synchronized HashMap.</li>
+                        <li>When would you use CopyOnWriteArrayList?</li>
+                        <li>What is a BlockingQueue and when is it useful?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a10"><label for="a10">Mark as completed</label></div>
+            </div>
+        </div>
+
+        <!-- UNIT 7: JDBC & Database -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📒 Unit 7: JDBC & Database</h2><span class="unit-badge">Weeks 28-31</span></div>
+
+            <div class="topic">
+                <h3>7.1 JDBC Architecture</h3>
+                <p>JDBC (Java Database Connectivity) is an API that enables Java applications to interact with databases.</p>
+                <span class="sub-topic">🔹 Key Components:</span>
+                <ul>
+                    <li><strong>DriverManager:</strong> Manages database drivers.</li>
+                    <li><strong>Connection:</strong> Represents a connection to a database.</li>
+                    <li><strong>Statement/PreparedStatement:</strong> Used to execute SQL queries.</li>
+                    <li><strong>ResultSet:</strong> Represents the result of a query.</li>
+                </ul>
+                <span class="sub-topic">🔹 JDBC Driver Types:</span>
+                <ul>
+                    <li>Type 1: JDBC-ODBC bridge (obsolete).</li>
+                    <li>Type 2: Native-API driver.</li>
+                    <li>Type 3: Network-Protocol driver.</li>
+                    <li>Type 4: Thin driver (pure Java, most common).</li>
+                </ul>
+                <div class="code-block">
+// Loading JDBC Driver (Type 4)
+Class.forName("com.mysql.cj.jdbc.Driver");
+
+// Establishing Connection
+String url = "jdbc:mysql://localhost:3306/mydb";
+Connection conn = DriverManager.getConnection(url, "user", "password");
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>What is JDBC and why is it used?</li>
+                        <li>Explain the role of DriverManager.</li>
+                        <li>What are the steps to connect to a database using JDBC?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a11"><label for="a11">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>7.2 Connection, Statement, ResultSet</h3>
+                <p>These are the core interfaces for executing queries and processing results.</p>
+                <span class="sub-topic">🔹 Statement:</span>
+                <ul>
+                    <li><code>createStatement()</code> creates a Statement object.</li>
+                    <li><code>executeQuery(String sql)</code> for SELECT queries.</li>
+                    <li><code>executeUpdate(String sql)</code> for INSERT/UPDATE/DELETE.</li>
+                </ul>
+                <span class="sub-topic">🔹 ResultSet:</span>
+                <ul>
+                    <li><code>next()</code> moves to the next row.</li>
+                    <li><code>getString()</code>, <code>getInt()</code> methods to retrieve data.</li>
+                </ul>
+                <div class="code-block">
+// Statement & ResultSet Example
+Statement stmt = conn.createStatement();
+ResultSet rs = stmt.executeQuery("SELECT id, name FROM students");
+
+while (rs.next()) {
+    int id = rs.getInt("id");
+    String name = rs.getString("name");
+    System.out.println(id + ": " + name);
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to query employee details from a database.</li>
+                        <li>What is the difference between Statement and PreparedStatement?</li>
+                        <li>How do you handle null values from ResultSet?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a12"><label for="a12">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>7.3 PreparedStatement (SQL Injection Prevention)</h3>
+                <p>PreparedStatement precompiles SQL queries and supports parameterized queries, preventing SQL injection.</p>
+                <span class="sub-topic">🔹 Benefits:</span>
+                <ul>
+                    <li>Prevents SQL injection attacks.</li>
+                    <li>Improves performance for repeated queries.</li>
+                    <li>Handles special characters automatically.</li>
+                </ul>
+                <div class="code-block">
+// PreparedStatement Example
+String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+PreparedStatement ps = conn.prepareStatement(sql);
+ps.setString(1, "user@email.com");
+ps.setString(2, "securePassword");
+
+ResultSet rs = ps.executeQuery();
+if (rs.next()) {
+    System.out.println("Login successful");
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program to insert a new record using PreparedStatement.</li>
+                        <li>How does PreparedStatement prevent SQL injection?</li>
+                        <li>What is the advantage of using PreparedStatement over Statement?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a13"><label for="a13">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>7.4 CallableStatement (Stored Procedures)</h3>
+                <p>CallableStatement is used to call stored procedures in a database.</p>
+                <span class="sub-topic">🔹 Parameters:</span>
+                <ul>
+                    <li><strong>IN:</strong> Input parameters.</li>
+                    <li><strong>OUT:</strong> Output parameters (return values).</li>
+                    <li><strong>INOUT:</strong> Both input and output.</li>
+                </ul>
+                <div class="code-block">
+// CallableStatement Example
+String sql = "{CALL getEmployeeCount(?)}";
+CallableStatement cs = conn.prepareCall(sql);
+cs.registerOutParameter(1, Types.INTEGER);
+cs.execute();
+int count = cs.getInt(1);
+System.out.println("Employee count: " + count);
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a stored procedure that calculates the average salary and call it from Java.</li>
+                        <li>What is the difference between IN and OUT parameters in CallableStatement?</li>
+                        <li>When would you use stored procedures?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a14"><label for="a14">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>7.5 Transaction Management</h3>
+                <p>Transactions ensure that a series of database operations succeed or fail as a single unit (ACID).</p>
+                <span class="sub-topic">🔹 ACID Properties:</span>
+                <ul>
+                    <li><strong>Atomicity:</strong> All or nothing.</li>
+                    <li><strong>Consistency:</strong> Database remains in a consistent state.</li>
+                    <li><strong>Isolation:</strong> Transactions are isolated from each other.</li>
+                    <li><strong>Durability:</strong> Committed changes are permanent.</li>
+                </ul>
+                <span class="sub-topic">🔹 JDBC Transaction Management:</span>
+                <ul>
+                    <li><code>conn.setAutoCommit(false)</code> → disable auto-commit.</li>
+                    <li><code>conn.commit()</code> → commit changes.</li>
+                    <li><code>conn.rollback()</code> → rollback changes.</li>
+                    <li><code>conn.setSavepoint()</code> → create savepoints.</li>
+                </ul>
+                <div class="code-block">
+// Transaction Example
+Connection conn = null;
+try {
+    conn = DriverManager.getConnection(url, user, password);
+    conn.setAutoCommit(false);
+
+    // Perform updates
+    PreparedStatement ps1 = conn.prepareStatement("UPDATE accounts SET balance = balance - 100 WHERE id = 1");
+    ps1.executeUpdate();
+
+    PreparedStatement ps2 = conn.prepareStatement("UPDATE accounts SET balance = balance + 100 WHERE id = 2");
+    ps2.executeUpdate();
+
+    conn.commit();
+    System.out.println("Transaction successful!");
+} catch (SQLException e) {
+    conn.rollback();
+    System.out.println("Transaction rolled back: " + e.getMessage());
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program that transfers money between two accounts using transactions.</li>
+                        <li>What is a savepoint and how is it used?</li>
+                        <li>What is the isolation level and why is it important?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a15"><label for="a15">Mark as completed</label></div>
+            </div>
+        </div>
+
+        <!-- UNIT 8: Advanced Java Features -->
+        <div class="unit-section">
+            <div class="unit-header"><h2>📘 Unit 8: Advanced Java Features</h2><span class="unit-badge">Weeks 32-37</span></div>
+
+            <div class="topic">
+                <h3>8.1 Lambda Expressions</h3>
+                <p>Lambda expressions (introduced in Java 8) provide a concise way to implement functional interfaces.</p>
+                <span class="sub-topic">🔹 Syntax:</span>
+                <p><code>(parameters) -> expression</code> or <code>(parameters) -> { statements; }</code></p>
+                <span class="sub-topic">🔹 Functional Interfaces:</span>
+                <ul>
+                    <li><code>Predicate<T></code> → tests a condition.</li>
+                    <li><code>Function<T, R></code> → transforms input to output.</li>
+                    <li><code>Consumer<T></code> → accepts a value.</li>
+                    <li><code>Supplier<T></code> → supplies a value.</li>
+                </ul>
+                <div class="code-block">
+// Lambda Examples
+List&lt;String&gt; names = Arrays.asList("Alice", "Bob", "Charlie");
+
+// Using lambda in forEach
+names.forEach(name -> System.out.println(name));
+
+// Using Predicate
+Predicate&lt;String&gt; startsWithA = s -> s.startsWith("A");
+names.stream().filter(startsWithA).forEach(System.out::println);
+
+// Using Function
+Function&lt;String, Integer&gt; length = s -> s.length();
+System.out.println(length.apply("Hello")); // 5
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a lambda expression to sort a list of strings in descending order.</li>
+                        <li>Create a custom functional interface and implement it with a lambda.</li>
+                        <li>Explain the benefits of using lambda expressions.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a16"><label for="a16">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>8.2 Stream API</h3>
+                <p>The Stream API allows functional-style operations on sequences of data. It supports operations like map, filter, reduce, and collect.</p>
+                <span class="sub-topic">🔹 Intermediate Operations:</span>
+                <ul>
+                    <li><code>filter()</code> → filters elements.</li>
+                    <li><code>map()</code> → transforms elements.</li>
+                    <li><code>sorted()</code> → sorts elements.</li>
+                </ul>
+                <span class="sub-topic">🔹 Terminal Operations:</span>
+                <ul>
+                    <li><code>collect()</code> → collects elements into a collection.</li>
+                    <li><code>forEach()</code> → executes an action on each element.</li>
+                    <li><code>reduce()</code> → reduces the stream to a single value.</li>
+                </ul>
+                <div class="code-block">
+// Stream API Examples
+List&lt;Integer&gt; numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+// Filter even numbers and sum
+int sum = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .mapToInt(n -> n)
+    .sum();
+System.out.println(sum); // 30
+
+// Convert to list of squares
+List&lt;Integer&gt; squares = numbers.stream()
+    .map(n -> n * n)
+    .collect(Collectors.toList());
+
+// Group by even/odd
+Map&lt;Boolean, List&lt;Integer&gt;&gt; groups = numbers.stream()
+    .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Given a list of strings, find the length of the longest string using streams.</li>
+                        <li>Calculate the average of a list of integers using streams.</li>
+                        <li>What is the difference between map() and flatMap()?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a17"><label for="a17">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>8.3 Functional Interfaces</h3>
+                <p>Functional interfaces have a single abstract method. Java 8 provides several built-in functional interfaces in the <code>java.util.function</code> package.</p>
+                <span class="sub-topic">🔹 Common Functional Interfaces:</span>
+                <ul>
+                    <li><code>Predicate<T></code> → boolean test(T t)</li>
+                    <li><code>Function<T,R></code> → R apply(T t)</li>
+                    <li><code>Consumer<T></code> → void accept(T t)</li>
+                    <li><code>Supplier<T></code> → T get()</li>
+                    <li><code>UnaryOperator<T></code> → T apply(T t)</li>
+                    <li><code>BinaryOperator<T></code> → T apply(T t1, T t2)</li>
+                </ul>
+                <div class="code-block">
+// Custom Functional Interface
+@FunctionalInterface
+interface Greeting {
+    String sayHello(String name);
+}
+
+// Usage
+Greeting greeting = name -> "Hello, " + name + "!";
+System.out.println(greeting.sayHello("Alice"));
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Create a functional interface for a calculator and implement it with lambda.</li>
+                        <li>Explain the @FunctionalInterface annotation.</li>
+                        <li>What are the advantages of using functional interfaces?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a18"><label for="a18">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>8.4 Java 8+ Features (Optional, Date/Time, var, records, sealed)</h3>
+                <p>Java has introduced many features after Java 8 to improve developer productivity and code quality.</p>
+                <span class="sub-topic">🔹 Optional:</span>
+                <p>Container object that may or may not contain a non-null value.</p>
+                <span class="sub-topic">🔹 Date/Time API (java.time):</span>
+                <p>New immutable date-time API.</p>
+                <span class="sub-topic">🔹 var (Local Variable Type Inference):</span>
+                <p>Allows the compiler to infer the type of local variables.</p>
+                <span class="sub-topic">🔹 Records (Java 14):</span>
+                <p>Immutable data classes with minimal boilerplate.</p>
+                <span class="sub-topic">🔹 Sealed Classes (Java 15):</span>
+                <p>Restricts which classes can extend a class.</p>
+                <div class="code-block">
+// Optional Example
+Optional&lt;String&gt; optional = Optional.ofNullable("Hello");
+optional.ifPresent(System.out::println);
+
+// Date/Time API
+LocalDate date = LocalDate.now();
+LocalDateTime dateTime = LocalDateTime.now();
+System.out.println(dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+
+// var Example
+var list = new ArrayList&lt;String&gt;(); // Inferred as ArrayList<String>
+
+// Record Example
+record Person(String name, int age) {}
+Person p = new Person("Alice", 25);
+System.out.println(p.name()); // Alice
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Write a program that uses Optional to avoid NullPointerException.</li>
+                        <li>Create a record for a Book with title, author, and ISBN.</li>
+                        <li>Explain the benefits of the Date/Time API over the old java.util.Date.</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a19"><label for="a19">Mark as completed</label></div>
+            </div>
+
+            <div class="topic">
+                <h3>8.5 Design Patterns (Singleton, Factory, Observer, Strategy)</h3>
+                <p>Design patterns provide reusable solutions to common software design problems.</p>
+                <span class="sub-topic">🔹 Singleton Pattern:</span>
+                <p>Ensures a class has only one instance.</p>
+                <span class="sub-topic">🔹 Factory Pattern:</span>
+                <p>Provides an interface for creating objects without specifying the concrete class.</p>
+                <span class="sub-topic">🔹 Observer Pattern:</span>
+                <p>Defines a one-to-many dependency between objects.</p>
+                <span class="sub-topic">🔹 Strategy Pattern:</span>
+                <p>Defines a family of algorithms and makes them interchangeable.</p>
+                <div class="code-block">
+// Singleton Pattern
+class Database {
+    private static Database instance;
+
+    private Database() {}
+
+    public static Database getInstance() {
+        if (instance == null) {
+            instance = new Database();
+        }
+        return instance;
+    }
+}
+
+// Factory Pattern
+interface Payment {
+    void pay(int amount);
+}
+
+class CreditCardPayment implements Payment {
+    public void pay(int amount) {
+        System.out.println("Paid " + amount + " using Credit Card");
+    }
+}
+
+class PaymentFactory {
+    public static Payment getPayment(String type) {
+        if (type.equals("card")) return new CreditCardPayment();
+        return null;
+    }
+}
+                </div>
+                <div class="practice-box">
+                    <h4>✏️ Practice Questions</h4>
+                    <ol>
+                        <li>Implement a Singleton class with thread safety.</li>
+                        <li>Create a Factory that produces different types of Vehicles.</li>
+                        <li>What is the Strategy pattern and when would you use it?</li>
+                    </ol>
+                </div>
+                <div class="checkbox-container" onclick="toggleComplete(this)"><input type="checkbox" id="a20"><label for="a20">Mark as completed</label></div>
+            </div>
+        </div>
+    </div>
+
+    <button class="reset-btn" onclick="resetProgress()">🔄 Reset Progress</button>
+    <div class="toast" id="toast">Progress saved!</div>
+
+    <script>
+        const STORAGE_KEY = 'java_advanced_progress';
+        let completedItems = new Set();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            setupEventListeners();
+            updateUI();
+        });
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            localStorage.setItem('theme', html.getAttribute('data-theme'));
+        }
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) completedItems = new Set(JSON.parse(saved));
+        }
+        function saveProgress() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([...completedItems]));
+            showToast('Progress saved!');
+        }
+        function setupEventListeners() {
+            document.querySelectorAll('.checkbox-container').forEach(c => {
+                c.addEventListener('click', (e) => {
+                    const cb = c.querySelector('input[type="checkbox"]');
+                    if (e.target.tagName !== 'INPUT') cb.checked = !cb.checked;
+                    if (cb.checked) { completedItems.add(cb.id); c.classList.add('completed'); }
+                    else { completedItems.delete(cb.id); c.classList.remove('completed'); }
+                    saveProgress(); updateUI();
+                });
+            });
+        }
+        function updateUI() {
+            const totalItems = document.querySelectorAll('.checkbox-container input[type="checkbox"]').length;
+            const completedCount = completedItems.size;
+            const percentage = Math.round((completedCount / totalItems) * 100);
+            document.getElementById('progressPercent').textContent = percentage + '%';
+            document.getElementById('completedCount').textContent = completedCount;
+            const ring = document.getElementById('progressRing');
+            const circumference = 2 * Math.PI * 36;
+            ring.style.strokeDashoffset = circumference - (percentage / 100) * circumference;
+            let unitsCompleted = 0;
+            const unitRanges = [
+                ['a1','a2','a3','a4','a5'],
+                ['a6','a7','a8','a9','a10'],
+                ['a11','a12','a13','a14','a15'],
+                ['a16','a17','a18','a19','a20']
+            ];
+            unitRanges.forEach(range => {
+                if (range.every(id => completedItems.has(id))) unitsCompleted++;
+            });
+            document.getElementById('unitsCompleted').textContent = unitsCompleted + '/4';
+            document.querySelectorAll('.checkbox-container').forEach(c => {
+                const cb = c.querySelector('input[type="checkbox"]');
+                if (completedItems.has(cb.id)) c.classList.add('completed');
+                else c.classList.remove('completed');
+            });
+        }
+        function resetProgress() {
+            if (confirm('Reset all progress?')) {
+                completedItems.clear();
+                localStorage.removeItem(STORAGE_KEY);
+                updateUI();
+                showToast('Progress reset!');
+            }
+        }
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2000);
+        }
+    </script>
+</body>
+</html>
